@@ -1,0 +1,32 @@
+<div class="full-width centered">
+  <h2>API Documentation</h2>
+</div>
+
+<button mat-button color="accent" routerLink="/apidocs/view/primer"> <span class="api-title">Getting Started</span></button>
+<br>
+<br>
+<mat-grid-list *ngIf="categories" [cols]="categories.length" 
+                                  rowHeight="250px"
+                                  gutterSize="8px">
+
+
+  <mat-grid-tile
+      *ngFor="let c of categories"
+      colspan="1"
+      rowspan="1"
+      >
+    <mat-grid-tile-header>
+      {{c}} API(s)
+    </mat-grid-tile-header>
+
+    <div>
+      <div *ngFor="let doc of DocsInCategory(c)">
+        <button mat-button color="accent" (click)="routeTo(doc)"> 
+          <img *ngIf="doc.iconFileName != ''" 
+                [src]="iconURL(doc)" class="api-icon" />
+          <span class="api-title"> {{doc.title}}</span>
+        </button>
+      </div>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

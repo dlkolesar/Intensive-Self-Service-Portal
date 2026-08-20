@@ -1,0 +1,128 @@
+
+<div fxLayout="row" fxLayoutAlign="left start">
+    <form #auditForm="ngForm" novalidate 
+          (ngSubmit)="FilterAuditData()" class="full-width">
+      <mat-card>
+          <mat-card-title>
+              <h3>Audit Trail</h3>
+          </mat-card-title>
+          <mat-card-content>
+            <div fxLayout="row" fxLayoutAlign="left start" fxLayoutGap="10px">
+                <div fxFlex="none">
+                  <br>
+                  <strong>Filters: </strong>
+                </div>
+                <div fxFlex>
+                  <mat-select  [(ngModel)]="systemIdFilter" style="width:200px;margin-top: 16px;" placeholder="System"
+                  #opt="ngModel" id="systemIdFilter" name="systemIdFilter">
+                      <mat-option value="-1">-- Any System --</mat-option>
+                      <mat-option value="11">Active Directory</mat-option>
+                      <mat-option value="14">Windows Patching</mat-option>
+                  </mat-select> 
+              </div>
+              <div fxFlex>
+                <mat-form-field class="mat-column-account">
+                    <input matInput  
+                          type="number" 
+                          name="accountFilter"
+                          placeholder="Account"
+                          [(ngModel)]="accountFilter"
+                    /> 
+                </mat-form-field>  
+            </div>
+              <div fxFlex>
+                  <mat-form-field class="mat-column-deviceNumber">
+                      <input matInput  
+                            type="number" 
+                            name="deviceNumberFilter"
+                            placeholder="Device"
+                            [(ngModel)]="deviceNumberFilter"
+                      /> 
+                  </mat-form-field>  
+              </div>
+              <div fxFlex>
+                  <mat-form-field>
+                      <input matInput  
+                            type="text" 
+                            name="useridFilter"
+                            placeholder="User Id"
+                            [(ngModel)]="useridFilter"
+                      /> 
+                  </mat-form-field>  
+              </div>
+              <div fxFlex>
+                  <mat-form-field>
+                      <input matInput  
+                            type="text" 
+                            name="actionFilter"
+                            placeholder="Action"
+                            [(ngModel)]="actionFilter"
+                      /> 
+                  </mat-form-field>  
+              </div>
+              
+              <div fxFlex>
+                  <button mat-button type="cancel"  (click)="ResetFilters()">Reset Filters</button>
+                  <button mat-raised-button color="primary" type="submit">Apply Filter(s)</button>
+              </div>
+            </div>
+            <!-- <mat-card *ngIf="pct>=100"> -->
+            <mat-card>
+                <mat-card-content>
+                    <div class="full-width" style="display:inline-block">
+                      <button mat-button color="accent"
+                          style="float:right" *ngIf="pct>=100"
+                          (click)="exportCSV('AuditReport.csv')">
+                              Export to CSV
+                      </button>
+                    </div>
+                    <div [style.height.px]="contentHeight - 310" style="overflow:auto">
+                        <table mat-table #table [dataSource]="ds" matSort>
+                            <ng-container matColumnDef="systemName">
+                                <th  mat-header-cell *matHeaderCellDef mat-sort-header> System </th>
+                                <td mat-cell *matCellDef="let row">{{row.systemName}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="account">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Account# </th>
+                                <td mat-cell *matCellDef="let row"> {{row.account}} </td>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="deviceNumber">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Device# </th>
+                                <td mat-cell *matCellDef="let row"> {{row.deviceNumber}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="userId" >
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>  SSO </th>
+                                <td mat-cell *matCellDef="let row"> {{row.userId}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header > Action </th>
+                                <td mat-cell *matCellDef="let row"> 
+                                    <div>{{row.action}} </div>
+                                    <div *ngFor="let d of row.arrDetails" class="mat-column-action-detail" >
+                                        {{d}}
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="timeStamp" >
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date/Time(UTC) </th>
+                                <td mat-cell *matCellDef="let row">
+                                  {{row.timeStamp | date: 'short' }}
+                                  
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columns; sticky: true"  ></tr>
+                            <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                        </table>        
+                    </div>
+                </mat-card-content>
+            </mat-card>
+          </mat-card-content>
+      </mat-card>
+    </form>
+</div>

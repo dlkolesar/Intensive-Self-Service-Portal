@@ -1,0 +1,117 @@
+
+
+<form #configForm="ngForm" novalidate 
+         class="full-width" *ngIf="showForm">
+    <div fxLayout="row" 
+        fxLayoutAlign="left start" fxLayoutGap="10px"  
+        [style.height.px]="componentHeight" class="full-width">
+        <div fxFlex="none">
+                <ss-server-selection *ngIf="showForm && !patchingAccount.optedOut"
+                            [servers]="servers"
+                            (serverClick)="serverClick($event)"
+                            (checkboxChange)="checkboxChange($event)">
+                </ss-server-selection>
+        </div>
+        <div fxFlex  style="padding-top:40px">
+            <mat-card >
+                <mat-card-title>Windows Patching Configuration</mat-card-title>
+                <mat-card-content> 
+                    <div fxLayout.gt-md="row" fxLayout.lt-lg="column"
+                        fxLayoutAlign="left start" 
+                        fxLayoutGap="24px" class="full-width">
+                        <div fxFlex="grow">
+                            <mat-accordion displayMode="default" multi="true">
+                                <mat-expansion-panel expanded="true">
+                                    <mat-expansion-panel-header >
+                                        <mat-panel-title>Account Configuration</mat-panel-title>
+                                        <mat-panel-description *ngIf="patchingAccount.optedOut==true" 
+                                                                class="color-warn">
+                                            Account is currently Opted Out
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <div>
+                                        <ss-win-patch-config-account [account]="patchingAccount"
+                                                                    (change)="accountChange($event)"
+                                                                        >
+                                        </ss-win-patch-config-account>
+                                    </div>
+                                </mat-expansion-panel>
+                                <mat-expansion-panel  [expanded]="selectedClient.deviceNumber>0" 
+                                                    [disabled]="selectedClient.deviceNumber==0">
+                                    <mat-expansion-panel-header>
+                                            <mat-panel-title>Device Configuration</mat-panel-title>
+                                            <mat-panel-description>
+                                                <em *ngIf="!standardServerName(selectedClient.name)">
+                                                    {{selectedClient.deviceNumber}}:&nbsp;
+                                                </em>
+                                                <em>
+                                                    {{selectedClient.name}}
+                                                </em>
+                                            </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <div>
+                                        <ss-win-patch-config-client #clientConfig
+                                                [client]="selectedClient">
+                                        </ss-win-patch-config-client>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                        <div fxFlex="none">
+                            <div>
+                                <button mat-button class="full-width" 
+                                    [disabled]="disableRefreshButton"
+                                                    color="accent"
+                                                    (click)="RefreshAccount()">
+                                    Refresh Server List 
+                                </button><br>
+                                <br>
+                                <br>
+                                <button mat-button class="full-width" 
+                                    [disabled]="disablePullButton"
+                                                    color="accent"
+                                                    (click)="PullSettingsNow()">
+                                    Pull settings from device(s) now 
+                                </button><br>
+                                <button mat-button  class="full-width" 
+                                            [disabled]="disablePatchButton"
+                                                    color="accent" 
+                                                    (click)="PatchNow()">
+                                    Patch selected device(s) now
+                                </button><br>
+                                <button mat-button  class="full-width" 
+                                            [disabled]="disableResetIdButton"
+                                                    color="accent" 
+                                                    (click)="ResetClientId()">
+                                    Reset WSUS Client ID
+                                </button><br>
+                                <button mat-button  class="full-width" 
+                                            [disabled]="disableResetSettingsButton"
+                                                    color="accent"
+                                                    (click)="onResetSettings()">
+                                    Revert all settings to Rackspace defaults
+                                </button><br>
+                                <!-- <button mat-button  class="full-width" 
+                                                    color="accent"
+                                                    (click)="onResetSettingsMS()">
+                                    Revert all settings to Microsoft defaults
+                                </button><br> -->
+                            </div>
+                            <br>
+                            <br>
+                            <br>
+                            <button type="submit"
+                                    mat-raised-button 
+                                    color="primary" 
+                                    class="full-width"
+                                    (click)="onSubmit(configForm)">
+                                    Save changes and push to device(s)
+                            </button>
+                        </div>
+                   </div>
+                </mat-card-content>
+            </mat-card>
+            
+        </div>
+    </div>
+</form>

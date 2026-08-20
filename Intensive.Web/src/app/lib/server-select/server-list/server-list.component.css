@@ -1,0 +1,12 @@
+
+.ss-server-list {
+    width:375px;
+}
+
+.ss-server-list .mat-list-option{
+    height:32px;
+}
+
+.mat-list[dense] .mat-list-item.mat-list-item-with-avatar, .mat-list[dense] .mat-list-option.mat-list-item-with-avatar, .mat-nav-list[dense] .mat-list-item.mat-list-item-with-avatar, .mat-nav-list[dense] .mat-list-option.mat-list-item-with-avatar, .mat-selection-list[dense] .mat-list-item.mat-list-item-with-avatar, .mat-selection-list[dense] .mat-list-option.mat-list-item-with-avatar{
+    height:24px;
+}

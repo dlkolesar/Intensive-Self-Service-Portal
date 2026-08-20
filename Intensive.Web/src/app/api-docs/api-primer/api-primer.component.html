@@ -1,0 +1,201 @@
+
+
+<div class="full-width centered">
+    <h2>API Documentation</h2>
+  </div>
+
+  
+<div class="ss-api-primer">
+    <mat-accordion displayMode="default" multi="false">
+        <mat-expansion-panel expanded="true" >
+          <mat-expansion-panel-header>
+            <mat-panel-title>Getting Started</mat-panel-title>
+          </mat-expansion-panel-header>
+          <div [style.height.px]="maxHeight" class="scrollable">
+              <p>
+                  The Segment Support Self Service API's are separated based on system.  Each 
+                  Segment Support system has(or will have) its own API, e.g., a SCOM API and 
+                  a separate Active Directory API, and yet another API for Windows Patching.  
+                  The URLs for each API will take the follwoing general format:
+              </p>
+              <blockquote>
+                  https://<em>hostServer</em>/<em>system</em>/<em>version</em>/<em>resource</em>[/<em>id</em>]...
+              </blockquote>
+            <p>
+              where 
+            </p>
+            <ul>
+              <li><em>hostServer</em> is the FQDN of the server hosting the API, typically, this will be <strong>api.intensive.int</strong></li>
+              <li><em>system</em> a short identifier for the Segment Support system the API talks to. e.g., <strong>scom</strong>, <strong>ad</strong>, <strong>av</strong>, etc...</li>
+              <li><em>version</em> will intially be <strong>v1</strong>.  If/when <em>breaking</em> changes are introduced, the version number will be incremented by one</li>
+              <li><em>resource</em> identifies what object(s) you want to work with.  This will always be a noun and be pluralized(users, domains, rules, ...).</li>
+              <li><em>id</em> optionally, identifies a single, specific instance of a resource, i.e., a specific server, or a user account</li>
+            </ul>
+            <p>
+                In some cases, additional, <em>resource</em> and <em>resource</em>/<em>id</em>'s may be added to the URL to
+                get additional "sub" resources.  For instance, the URL 
+            </p>
+            <blockquote>https://api.intensive.int/ad/v1/domains/intensive/groups/devs/members</blockquote>
+            <p>will go to the Active Diretory API(<strong>ad</strong>), connect to the <strong>intensive</strong>
+               domain, get the group named <strong>devs</strong> and return the membership list.
+            </p>
+            <p>
+              Generally, URLs that end with a <em>resource</em> name will accept one or more search/filter parameters in the querystring and 
+              return the results in an <strong>apiCollection</strong> object(see below). URLs that end with and
+              <em>id</em> will generally return a JSON-object representing that specific resource.
+            </p>
+          </div>
+        </mat-expansion-panel>
+       
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>Return Codes and Errors</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div [style.height.px]="maxHeight" class="scrollable">
+                <p>
+                  Standard HTTP error codes are returned by the APIs
+                </p>
+                <mat-list>
+                  <mat-list-item>
+                    <p matLine>
+                      <strong> 200 </strong> OK
+                      <em> The Request was successful. A JSON data object will be in the body of the Response.  
+                        Be aware that the returned object may be an empty array </em>
+                    </p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <p matLine>
+                      <strong> 204 </strong> No Content
+                      <em> The Request was successful, however no data is returned.
+                        This is common for PUT and DELETE requests
+                      </em>
+                    </p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <p matLine>
+                      <strong> 401 </strong> UnAuthorized
+                      <em> The <strong>X-Auth-Token</strong> header was not present or the token provided in the header is invalid or expired</em>
+                    </p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <p matLine>
+                      <strong> 403 </strong> Forbidden
+                      <em> The user associated with the token in the <strong>X-Auth-Token</strong> header is not allowed to perform the request</em>
+                    </p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <p matLine>
+                      <strong> 404 </strong> Not Found
+                      <em> The resource identified by the URL was not found </em>
+                    </p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <p matLine>
+                      <strong> 500 </strong> Internal Server Error
+                      <em> An unexpected error occurred in the API.  An <strong>ApiError</strong> object is returned, which contains information about the error</em>
+                    </p>
+                  </mat-list-item>
+                </mat-list>
+                </div>
+            </mat-expansion-panel>
+        <mat-expansion-panel >
+            <mat-expansion-panel-header>
+              <mat-panel-title>Api Collections</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div [style.height.px]="maxHeight" class="scrollable">
+              <p>
+                Many endpoints within the Segment Support API's are used to search for resources
+                that match a set of criteria, such as
+              </p>
+              
+              <blockquote>https:/api.intensive.int/ad/v1/domains/intensive/users?filter=(employeeid=rs1234)</blockquote>
+           
+              <p>
+                which will return all AD user accounts that have an employeeid of 'rs1234'".
+              </p>
+              
+              <p>   
+                Rather than return the actual data object(s) that match the criteria, an <strong>apiCollection</strong>
+                object is returned, which contains an array of 0 or more URL's for each matching object 
+                (along with a count of how many urls are in the array), rather than an 
+                array of the actual objects. 
+              </p>
+              
+              <p> 
+                Returning the matching resource URLs, instead of the actual object 
+                representation(s) provides a couple of advantages to your 
+                application:
+              </p>
+              <ul>
+                  <li>You know exactly how many items are in the result set so you can decide how to handle paging operations, or IF you even want to fetch the objects</li>
+                  <li>Knowing the size of the result set gives you the ability to show a progress bar/dial as you fetch the matching resource objects.</li>
+                  <li>Your app can become more responsive;   Depending on how large the objects are, and how many are being returned,
+                      it is far quicker to transmit a set of urls than a set of object representations.  The larger the object, the larger the savings will be</li>
+                </ul>
+              <p> 
+                  API endpoints that return an <strong>apiCollection</strong> object will return an empty object if there
+                  are no matches and the HTTP return code will be <strong>200</strong>, not <strong>404</strong>
+              </p>  
+              <blockquote>
+                  {{ '{' }}
+                  &#x22;count&#x22;: 0,
+                  &#x22;resources&#x22;: []
+                  {{ '}' }}
+              </blockquote>
+          </div>
+          </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Authentication and Authorization</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div [style.height.px]="maxHeight" class="scrollable">
+              <p>
+                  All POST, PUT and DELETE HTTP methods, and even some GET operations, 
+                  will require a valid Rackspace Identity token, which should be presented in an 
+                  <strong>X-Auth-Token</strong> header of the request.
+                </p>
+          
+                <p> 
+                  An Identity token can be generated by the Rackspace Identity API, <a href="https://identity-internal.api.rackspacecloud.com/v2.0/tokens">https://identity-internal.api.rackspacecloud.com/v2.0/tokens </a>
+                  and passing a payload similar to this:
+                </p>
+                <blockquote>
+                    {{ '{' }}
+                      &#x22;auth&#x22;: {{ '{' }}
+                        &#x22;RAX-AUTH:domain&#x22;: {{ '{' }}
+                          &#x22;name&#x22;: &#x22;Rackspace&#x22;
+                          {{ '}' }},
+                        &#x22;passwordCredentials&#x22;: {{ '{' }}
+                          &#x22;username&#x22;: &#x22;<em><strong>SSO</strong></em>&#x22;,
+                          &#x22;password&#x22;: &#x22;<em><strong>SSOPASS</strong></em>&#x22;
+                          {{ '}' }}
+                        {{ '}' }}
+                    {{ '}' }}
+                </blockquote>
+                <p>
+                  Change <em><strong>SSO</strong></em> and <em><strong>SSOPASS</strong></em> to your Rackspace SSO userid and password.
+                </p>
+
+                  <p> 
+                  Many of the Active Directory API endpoints prevent you from altering any user accounts or
+                  groups that are not "yours".  Ownership of a user account is assigned by populating
+                  the EmployeeId property of the AD user object with your Rackspace employee id.  
+                  In this manner, one or more service 
+                  accounts could be managed via the API, but only by the "owner" of the service 
+                  account as indicated by the employeeid attribute.
+                </p>
+
+                <p>
+                  The API will compare the EmployeeId attribute of the AD user account you are
+                  attempting to modify with the EmployeeId attribute of the SSO associated with 
+                  the Identity token that is present in the required <strong>X-Auth-Token</strong> header.  
+                  If the two match, the change is allowed, otherwise, a 404 FORBIDDEN error is returned.
+                </p>
+
+                <p>
+                  NOTE: the EmployeeId attribute cannot be changed via the AD API.
+              </p>
+              </div>
+          </mat-expansion-panel>
+      </mat-accordion>   
+</div>

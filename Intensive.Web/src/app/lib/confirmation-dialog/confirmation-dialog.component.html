@@ -1,0 +1,20 @@
+
+<div mat-dialog class="app-confirmation-dialog">
+  <h1 mat-dialog-title>
+      <mat-icon style.color="blue">help</mat-icon>
+      {{data.title}}
+  </h1>
+  <mat-dialog-content>
+    {{data.message}}<br>
+    <br>
+    {{data.question}}<br>
+  </mat-dialog-content>
+  <mat-dialog-actions style="float:right">
+      <button mat-button  color="accent" 
+              mat-dialog-close 
+              (click)="close(false)">Cancel</button>
+    <button type="submit" mat-raised-button  color="primary" 
+            mat-dialog-close
+            (click)="close(true)">OK</button>
+  </mat-dialog-actions>
+</div>

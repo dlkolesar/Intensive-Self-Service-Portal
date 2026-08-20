@@ -1,0 +1,133 @@
+
+
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+// color palletes
+//    red, pink, purple, deep-purple, indigo,
+//    blue, light-blue, cyan, teal, green, light-green
+//    lime, yellow, amber, orange, deep-orange
+//    brown, grey, blue-grey
+//
+
+
+//alpha.1
+ $app-primary: mat-palette($mat-blue-gray);
+ $app-accent:  mat-palette($mat-blue);
+
+//alpha.2
+// $app-primary: mat-palette($mat-teal);
+// $app-accent:  mat-palette($mat-blue); 
+
+//alpha.3
+//$app-primary: mat-palette($mat-indigo);
+//$app-accent:  mat-palette($mat-blue, A200, A100, A400);
+
+//alpha.4
+//$app-primary: mat-palette($mat-blue,800); //microsoft blue
+//$app-accent:  mat-palette($mat-blue-grey); //makes things look "disabled"
+
+//alpha.5 and 6
+//$app-primary: mat-palette($mat-deep-orange, 900);
+//$app-accent:  mat-palette($mat-brown, A400, A200, A700);
+
+//alpha.7
+//$app-primary: mat-palette($mat-deep-purple);
+//$app-accent:  mat-palette($mat-deep-orange, A200, A100, A400);
+
+//$app-primary: mat-palette($mat-red, 900);
+//$app-accent:  mat-palette($mat-indigo, A900, A100, A400);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$app-theme: mat-light-theme($app-primary, $app-accent);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($app-theme);
+//@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+
+
+// @import 'app/common/device-filters/device-filters.theme';
+@import 'app/windows-patching/win-patch-calendar/_win-patch-calendar-theme';
+
+// Using the $theme variable from the pre-built theme you can call the theming function
+//  @include account-devices-theme($app-theme);
+@include ss-win-patch-calendar-theme($app-theme);
+ 
+ 
+  $primary: map-get($app-theme, primary);
+  $accent: map-get($app-theme, accent);
+  $warn: map-get($app-theme, warn);
+  $background: map-get($app-theme, background);
+  $foreground: map-get($app-theme, foreground);
+  
+
+/* Material Design Overrides */
+@import './styles-overrides';
+
+
+//mixins
+@mixin borderall($color){
+  border-width: 1px;
+  border-style: solid;
+  border-color: mat-color($color);;
+}
+
+/* You can add global styles to this file, and also import other style files */
+body { font-family: Verdana, Geneva, Tahoma, sans-serif}
+
+
+.fill-remaining-space { // This fills the remaining space, by using flexbox. 
+  flex: 1 1 auto;
+}
+
+
+.border-primary{ 
+    @include borderall($primary)
+}
+
+.border-accent{ 
+  @include borderall($accent)
+}
+
+.border-rounded {
+  border-radius: 16px;
+}
+
+.full-width { width: 100% }
+.float-right { float: right; }
+.float-left { float: left; }
+.scrollable {overflow: auto;}
+.centered { text-align: center}
+.middle {margin-top: auto; margin-bottom: auto}
+.hidden {visibility:hidden}
+.notHidden {visibility: visible;}
+
+
+.color-warn   { color: mat-color($warn); }
+.color-primary{ color: mat-color($primary); }
+.color-accent { color: mat-color($accent); }
+
+.bg-warn   { background-color: mat-color($warn); }
+.bg-primary{ background-color: mat-color($primary); }
+.bg-accent { background-color: mat-color($accent); }
+
+.mat-row.stripe:nth-child(even){
+  background-color:mat-color($accent,50)
+}
+
+.report-row:nth-child(even) {background-color:mat-color($accent,50)}
+
+th { cursor:pointer }
+tr { cursor: default }
+td { cursor: default }
+
+
+
+
+
+
+

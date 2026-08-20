@@ -1,0 +1,26 @@
+
+.mat-table{
+   width:100%;
+}
+.mat-column-name {
+   width: 300px;
+    cursor: default;
+    vertical-align: top;
+ }
+
+ .mat-column-patchingLevel {
+    width:100px;
+    cursor: default;
+    vertical-align: top;
+ }
+ .mat-column-patches{
+      width:auto;
+     text-overflow: ellipsis;
+     cursor: default;
+     vertical-align: top;
+ }
+
+ .mat-row:nth-child(odd){
+    background-color:mat-color(green,50)
+  }
+ 

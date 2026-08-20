@@ -1,0 +1,23 @@
+12/06/2019 15:04:20 Intensive.API.Docs [1] ***** API starting up *****
+12/06/2019 15:04:38 Intensive.API.Docs [9] Identity and Access
+12/06/2019 15:04:38 Intensive.API.Docs [9]    Active Directory
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9] Misc
+12/06/2019 15:04:38 Intensive.API.Docs [9]    ARIC
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9]    Auditing
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9]    Shared
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9] Monitoring
+12/06/2019 15:04:38 Intensive.API.Docs [9]    NimBUS-UIM
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9]    SCOM
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9] Patching and Security
+12/06/2019 15:04:38 Intensive.API.Docs [9]    Linux Patching
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9]    Sophos AntiVirus
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json
+12/06/2019 15:04:38 Intensive.API.Docs [9]    Windows Patching
+12/06/2019 15:04:38 Intensive.API.Docs [9]       openapi.json

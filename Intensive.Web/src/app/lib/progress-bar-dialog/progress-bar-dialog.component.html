@@ -1,0 +1,16 @@
+<div mat-dialog class="ss-progress-dialog">
+  <h2 mat-dialog-title>{{title}}</h2>
+  <div mat-dialog-content>
+       <mat-progress-bar
+          [mode]="type"
+          [value]="pctComplete"
+          >
+      </mat-progress-bar>
+      <div *ngIf="type=='determinate'"
+            class="ss-progressText">
+            {{pctComplete}}%
+      </div>
+      <br>
+    <div class="ss-progressMsg">{{message}}</div>
+  </div>
+</div>

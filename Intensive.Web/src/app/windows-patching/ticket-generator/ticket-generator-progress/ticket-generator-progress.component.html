@@ -1,0 +1,26 @@
+
+
+
+<div class="account-select" fxLayout="row" fxLayoutAlign="center center" >
+  <div fxflex fxFlexAlign="center center">
+    <mat-card>
+        <mat-card-title>Patching Ticket Generator Progress</mat-card-title>
+        <mat-card-content>
+          <div *ngIf="generatorIsRunning">
+            <!-- <div style="width:100%;text-align: center">{{completedAccounts}} of {{totalAccounts}} accounts</div> -->
+            <mat-progress-bar style="height:35px" mode="determinate" [value]="pctComplete"></mat-progress-bar>
+            <div style="width:100%;text-align: center;">{{pctComplete.toFixed(2)}}%</div>
+          </div>  
+          <div *ngIf="!generatorIsRunning">
+            <p>
+              The Patching Ticket Generator has completed generating tickets for this month, 
+              or has not yet started generating tickets for this month.
+            </p>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="UpdateProgress()">Refresh</button>
+        </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

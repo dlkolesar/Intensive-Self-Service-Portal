@@ -1,0 +1,19 @@
+.tag-list {
+    width:160px;
+}
+
+.tag-list .mat-list-item{
+    height:24px;
+}
+
+.mat-list[dense] .mat-list-item.mat-list-item-with-avatar, .mat-list[dense] .mat-list-option.mat-list-item-with-avatar, .mat-nav-list[dense] .mat-list-item.mat-list-item-with-avatar, .mat-nav-list[dense] .mat-list-option.mat-list-item-with-avatar, .mat-selection-list[dense] .mat-list-item.mat-list-item-with-avatar, .mat-selection-list[dense] .mat-list-option.mat-list-item-with-avatar{
+    height:24px;
+}
+
+.mat-list-base .mat-list-item .mat-list-item-content, .mat-list-base .mat-list-option .mat-list-item-content{
+    padding: 0;
+}
+
+.mat-list-base[dense] .mat-list-item .mat-list-item-content, .mat-list-base[dense] .mat-list-option .mat-list-item-content{
+    padding: 0;
+}

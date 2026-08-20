@@ -1,0 +1,30 @@
+<div mat-dialog class="ss-about-dialog">
+    <form #aboutForm="ngForm">
+        <div fxLayout="row" fxLayoutAlign="left start" fxLayoutGap="20px" class="full-width">
+         <div fxFlex="none">
+                <img src="/assets/ss_logo.jpg" height="142px" width="128px">
+         </div>
+
+         <div fxFlex>
+            <h1 mat-dialog-title>
+                    {{title}}
+            </h1>
+            <strong>Version {{version}}</strong>
+            <em style="font-size:small;margin-left:5px"><a target="_blank" href="https://jira.rax.io/projects/SSD?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=released-unreleased&contains=self%20service%20portal">(version history)</a></em>
+         </div>
+       </div>
+        
+        <mat-dialog-content>
+            <p>
+                The Segment Support Self Service Web Site provides Rackers with convenient, easy-to-use tools that provide limited and controlled
+                access to the various systems maintained by the Segment Support organization.
+            </p>
+            <p>
+                <a href="https://one.rackspace.com/display/SegSup/Intensive+Self+Service+Portal" target="_blank">Self-Service Portal Project</a>
+            </p>
+        </mat-dialog-content>
+        <mat-dialog-actions style="float:right">
+            <button type="submit" mat-raised-button color="primary" [mat-dialog-close]="true">Close</button>
+        </mat-dialog-actions>
+    </form>
+</div>

@@ -1,0 +1,89 @@
+
+.content{
+    margin: 8px;
+}    
+
+
+.status-success{
+    color:green;
+}
+
+.status-warning{
+    color:goldenrod;
+}
+
+.status-error{
+    color:red;
+}
+
+
+.ss-toolbar-title { text-align:left; }
+
+.ss-toolbar-account {text-align: center; }
+
+.ss-toolbar-help { text-align: right }
+
+// .sidenav-content {width: 500px}
+
+
+
+md2-accordion-tab:hover{
+    background-color:rgba(black, 0.07),
+}
+.navlist {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.navsublist {
+    list-style-type: none;
+    margin-left: 16px;
+    padding: 0;
+}
+
+.navitem {
+    margin: 0;
+    padding: 0;
+    display: list-item;
+    cursor: pointer;
+}
+.navitem:hover {
+    background-color:rgba(black, 0.1)
+}
+
+
+.navlink {
+    box-sizing: border-box;
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 32px;
+    text-decoration: none;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    padding: 0 32px;
+    position: relative;
+    color: rgba(0,0,0,1);
+}
+
+md2-accordion-header {
+    padding: 0 16px;
+}
+
+
+.loadingDots {
+    font-size: 19px;
+    padding: 10px 10px 10px 10px;
+}
+
+.loadingDots:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    position: fixed;
+    -webkit-animation: ellipsis steps(4,end) 900ms infinite;
+    animation: ellipsis steps(4,end) 900ms infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+}
+

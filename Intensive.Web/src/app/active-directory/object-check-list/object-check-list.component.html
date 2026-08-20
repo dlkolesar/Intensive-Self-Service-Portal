@@ -1,0 +1,79 @@
+<div>
+    <p style="padding-left:24px">
+        Filters: <mat-button-toggle-group #group="matButtonToggleGroup" multiple >
+                <mat-button-toggle value="groups" 
+                        [title]="showGroups ? 'Hide Groups' : 'Show Groups'"  
+                        [checked]="showGroups" 
+                        (change)="applyFilter($event)">
+                    <mat-icon>group</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="Users" 
+                        [title]="showUsers ? 'Hide Users' : 'Show Users'"  
+                        [checked]="showUsers" 
+                        (change)="applyFilter($event)">
+                    <mat-icon>person</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="computers" 
+                        [title]="showComputers ? 'Hide Computers' : 'Show Computers'"  
+                        [checked]="showComputers" 
+                        (change)="applyFilter($event)">
+                    <mat-icon>computer</mat-icon>
+                </mat-button-toggle>            
+        </mat-button-toggle-group>
+    </p> 
+    <ss-export-to-csv style="float:right" [ds]="tbl" 
+                    [filename]="csvFileName"  
+                    [colNames]="displayedColumns">
+    </ss-export-to-csv>
+    <div class="scrollable full-width" [style.height.px]="height - 64">
+        <table #tbl mat-table [dataSource]="dataSource" matSort class="full-width">
+
+                <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                [checked]="isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                                (change)="$event ? selection.toggle(row) : null"
+                                [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                    
+                </td>
+                </ng-container>
+
+                <ng-container matColumnDef="domain">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Domain </th>
+                        <td mat-cell *matCellDef="let row"> 
+                            {{getDomainName(row.dn)}}
+                        </td>
+                    </ng-container>
+
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+                    <td mat-cell *matCellDef="let row"> 
+                        <mat-icon [title]="getObjectCategory(row)" *ngIf="getObjectCategory(row) == 'user'">person</mat-icon>
+                        <mat-icon [title]="getObjectCategory(row)" *ngIf="getObjectCategory(row) == 'group'">group</mat-icon>
+                        <mat-icon [title]="getObjectCategory(row)" *ngIf="getObjectCategory(row) == 'computer'">computer</mat-icon>
+                    </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="displayName">
+                <th mat-header-cell *matHeaderCellDef  mat-sort-header> Object </th>
+                <td mat-cell *matCellDef="let row"> 
+                    {{row.displayName}}
+                    </td>
+                </ng-container>
+            
+            
+                <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                    (click)="selection.toggle(row)">
+                </tr>
+        </table>
+    </div>
+</div>
+
+  

@@ -1,0 +1,67 @@
+
+<div fxLayout="row" fxLayoutAlign="space-around center" >
+  <div fxflex="grow"></div>
+  <div fxflex style="width:800px">
+
+  <!-- <div style="margin-left:auto;margin-right:auto;width:600px"> -->
+    <mat-card>
+      <mat-card-title>Patching Ticket Generator Preview</mat-card-title>
+      
+      <mat-card-content>
+        <form #previewForm="ngForm" novalidate 
+              (ngSubmit)="OnSubmit()">
+              <mat-form-field>
+                <mat-select placeholder="Select Account" (selectionChange)="OnAccountSelect($event)">
+                  <mat-option *ngFor="let acct of accounts" [value]="acct">{{ acct }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              &nbsp;
+              <button type="submit" mat-button mat-raised-button color="primary" >Generate Preview...</button>
+
+              <mat-tab-group *ngIf="showPreviewResults" dynamicHeight="true" style="margin-top:32px">
+                  <mat-tab label="Preview 1" >
+                    <mat-form-field class="full-width">
+                      <textarea matInput readonly [value]="previews[0]" 
+                                matTextareaAutosize matAutosizeMinRows="2"
+                                [matAutosizeMaxRows]="textareaRows">
+                      </textarea>
+                    </mat-form-field>
+                  </mat-tab>
+                  <mat-tab label="Preview 2" *ngIf="previews.length>1">
+                    <mat-form-field class="full-width">
+                      <textarea matInput readonly [value]="previews[1]"></textarea>
+                    </mat-form-field>
+                  </mat-tab>
+                  <mat-tab label="Preview 3?" *ngIf="previews.length>2">
+                    <div [style.height.px]="contentHeight" style="overflow:auto">
+                      <p>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      </p>
+                      <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        </p>
+                        <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            </p>
+                            <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                </p>
+                                <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                    </p>
+                                    <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                        </p>
+                                        
+                    </div>
+                  </mat-tab>
+
+              </mat-tab-group>
+
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxflex="grow"></div>
+</div>

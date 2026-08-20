@@ -1,0 +1,1203 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Active Directory API",
+    "version": "v1",
+    "description": "The Intensive Active Directory API provides controlled, limited access to certain functions within an Active Directory domain.\n",
+    "contact": {
+      "name": "Rackspace Segment Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.selfservice.intensive.int/ad/v1",
+      "description": "Production"
+    },
+    {
+      "url": "https://test.api.selfservice.intensive.int/ad/v1",
+      "description": "Staging/Test"
+    },
+    {
+      "url": "https://beta.api.selfservice.intensive.int/ad/v1",
+      "description": "Beta"
+    }
+  ],
+  "paths": {
+    "/domains": {
+      "get": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Get valid Domain Names",
+        "description": "Returns an ApiCollection object with URLS to each valid AD domain\n\nThis endpoint does not actually execute any code.  Instead, the web server redirects this URL to a specific JSON file and returns the contents of that file.  Because of this redirect, some clients like *cURL* may receive the 301 HTTP Status Code.\n\nThere are two work arounds for this\n  - add a trailing / to the url\n  - configure your client to automatically follow the redirect.  For *cURL* clients this is the **-L** option\n",
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 8,
+                  "resources": [
+                    "https://api.selfservice.intensve.int/domains/intensive",
+                    "https://api.selfservice.intensve.int/domains/dfw",
+                    "https://api.selfservice.intensve.int/domains/fra",
+                    "https://api.selfservice.intensve.int/domains/hkg",
+                    "https://api.selfservice.intensve.int/domains/iad",
+                    "https://api.selfservice.intensve.int/domains/lon",
+                    "https://api.selfservice.intensve.int/domains/ord",
+                    "https://api.selfservice.intensve.int/domains/syd",
+                    "https://api.selfservice.intensve.int/domains/globalrs"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains/{domainName}": {
+      "get": {
+        "tags": [
+          "Domains"
+        ],
+        "summary": "Get Domain Info",
+        "description": "Returns basic information about an AD Domain",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adDomain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adDomain"
+                },
+                "example": {
+                  "fqdn": "intensive.int",
+                  "sites": [
+                    "Dallas",
+                    "Dulles",
+                    "London",
+                    "HongKong",
+                    "Chicago",
+                    "Sydney",
+                    "Germany",
+                    "DFW3"
+                  ],
+                  "dn": "DC=intensive,DC=int",
+                  "name": "Intensive",
+                  "displayName": "intensive.int",
+                  "classList": [],
+                  "principalName": null,
+                  "domainName": "intensive",
+                  "isContainer": false,
+                  "isUser": false,
+                  "isGroup": false,
+                  "isComputer": false,
+                  "isForeignSecurityPrincipal": false,
+                  "attributes": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "the domain does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/domains/{domainName}/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Find Users",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria.\n",
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 29,
+                  "resources": [
+                    "https://api.intensive.int/ad/v1/domains/{domainName}/users/dan.kolesar",
+                    "https://api.intensive.int/ad/v1/domains/{domainName}/users/dan1668",
+                    "https://api.intensive.int/ad/v1/domains/{domainName}/users/Dan5673.cust",
+                    "https://api.intensive.int/ad/v1/domains/{domainName}/users/Dan9386.cust",
+                    "      :                                                                  ",
+                    "      :                                                                  ",
+                    "      :                                                                  ",
+                    "https://api.intensive.int/ad/v1/domains/{domainName}/users/4725835-dan.coffey",
+                    "https://api.intensive.int/ad/v1/domains/{domainName}/users/834705-danadmin",
+                    "https://api.intensive.int/ad/v1/domains/{domainName}/users/834705-danuser"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPFilter"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create User or Service Account",
+        "description": "Creates a new user or service account in the specified OU.  The request body must contain either a **adNewUserAccount** object or a **adNewServiceAccount** object.\n\n**Requirements and Restrictions**\n  - _domainName_ must be **intensive**\n  - userids ending with **.cust** will ignore the _parentOU_ argument and create the account in a predetermined OU\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/adNewUserAccount"
+                  },
+                  {
+                    "$ref": "#/components/schemas/adNewServiceAccount"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/403"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/domains/{domainName}/users/{userid}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get User",
+        "description": "Returns an **AdUser** object with data about the given user.  \n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/userid"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPAttributes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adUser",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adUser"
+                },
+                "example": {
+                  "userId": "joe.racker",
+                  "firstName": "Joe",
+                  "lastName": "Racker",
+                  "enabled": true,
+                  "lockedOut": false,
+                  "dn": "CN=Joe.Racker,OU=CUST,OU=Support,DC=intensive,DC=int",
+                  "name": "Joe Racker",
+                  "displayName": "Joe Racker",
+                  "classList": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                  ],
+                  "principalName": "INTENSIVE\\joe.racker",
+                  "domainName": "intensive",
+                  "isContainer": false,
+                  "isUser": true,
+                  "isGroup": false,
+                  "isComputer": false,
+                  "isForeignSecurityPrincipal": false,
+                  "isHidden": false,
+                  "attributes": {
+                    "mail": "joe.racker@rackspace.com",
+                    "manager": ""
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "the user does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update User Attributes",
+        "description": "Updates User attributes.\n\nNote that some user attributes cannot be updated because they are read-only within AD.  Other attributes are explicitly denied by this API, for security reasons.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/userid"
+          },
+          {
+            "$ref": "#/components/parameters/Site"
+          }
+        ],
+        "requestBody": {
+          "description": "an **adUser** object that with the new values set",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/adUser"
+              },
+              "example": {
+                "userId": "joe.racker",
+                "firstName": "Joe",
+                "lastName": "Racker",
+                "enabled": true,
+                "lockedOut": false,
+                "dn": "CN=Joe.Racker,OU=CUST,OU=Support,DC=intensive,DC=int",
+                "name": "Joe Racker",
+                "displayName": "Joe Racker",
+                "classList": [
+                  "top",
+                  "person",
+                  "organizationalPerson",
+                  "user"
+                ],
+                "principalName": "INTENSIVE\\joe.racker",
+                "domainName": "intensive",
+                "isContainer": false,
+                "isUser": true,
+                "isGroup": false,
+                "isComputer": false,
+                "isForeignSecurityPrincipal": false,
+                "isHidden": false,
+                "attributes": {
+                  "mail": "joe.racker@rackspace.com",
+                  "manager": ""
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "description": "the user does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "userMatch": []
+          }
+        ]
+      }
+    },
+    "/domains/{domainName}/users/{userid}/password": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a new password",
+        "description": "Generates a new, random password for the user account and returns the new password and expiration time.  \n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/userid"
+          },
+          {
+            "$ref": "#/components/parameters/Site"
+          }
+        ],
+        "security": [
+          {
+            "userMatch": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adDomain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adGeneratedPassword"
+                },
+                "example": {
+                  "expires": "2019-09-02T05:57:26.5344732Z",
+                  "password": "n0SyUQOIqRuscnmkc7Pr"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "description": "the user does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Expires the user account/password immediately",
+        "description": "Sets the account expiration date/time to the current date/time, preventing anyone from logging on with the current password  \n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/userid"
+          },
+          {
+            "$ref": "#/components/parameters/Site"
+          }
+        ],
+        "security": [
+          {
+            "userMatch": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "description": "the user does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/domains/{domainName}/users/{custUserid}/customeraccess": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Customer Access information",
+        "description": "Returns the accounts that this user has access to and when that access will expire \n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/custUserid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "dictionary/associative array",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "A dictionary(associative array) of key-value pairs, where the key is the account number that the userid has access to and the value is the UTC date/time that access will expire'\n"
+                },
+                "example": {
+                  "987654": "2019-02-02T04:42:22.3216484Z",
+                  "1234567": "2019-02-02T05:57:26.5344732Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "description": "the user does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Grant Customer Access",
+        "description": "Grant the userid access to one or more customer environments",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/custUserid"
+          },
+          {
+            "$ref": "#/components/parameters/Site"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "An account number(in quotes) representing the customer environment to which this userid should be granted access.  The access will be automatically revoked after a pre-set number of hours that is configured on the server.\n\nThe GlobalRS, Intensive and Intensive child domains are searched for <accountNumber>-Rax groups, if found, the userid is added to the group in that domain.\n\nThis is a lengthy process and can take 20-40 seconds or longer to respond.\n",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "description": "account number in quotes"
+              },
+              "example": "123456"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "an array of success/error messages for each domain where the the user was granted access\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int added to INTENSIVE\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int added to ORD\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int added to DFW\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int added to SYD\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int added to IAD\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int added to LON\\1103359-RAX"
+                ]
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "description": "the user does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "userMatch": []
+          }
+        ]
+      }
+    },
+    "/domains/{domainName}/users/{custUserid}/customeraccess/{account}": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Revoke Customer Access",
+        "description": "Revoke the userid's access to a customer environment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/custUserid"
+          },
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/Site"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "an array of success/error messages for each domain where the the user's access was revoked\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int removed from INTENSIVE\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int removed from ORD\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int removed from DFW\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int removed from SYD\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int removed from IAD\\1103359-RAX",
+                  "CN=Joe Racker,OU=CUST,OU=Support,DC=intensive,DC=int removed from LON\\1103359-RAX"
+                ]
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "description": "the user does not exist"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "userMatch": []
+          }
+        ]
+      }
+    },
+    "/domains/{domainName}/groups": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Find Groups",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria.\n",
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPFilter"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ]
+      }
+    },
+    "/domains/{domainName}/groups/{groupid}": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Get Group",
+        "description": "Returns an **adGroup** object",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/groupid"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPAttributes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adGroup",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adGroup"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/domains/{domainName}/groups/{groupid}/members": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Get Group Membership List",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria. \n\nSince Active Directory only stores the Distinguished Name(DN) of each member, the only way to determine if the member is a user, computer, or another group, is to retrieve that object using the DN. For very large groups, this means extremely long execution times.  \n\nFor that reason, this API returns the member DN in the form of links to the  **/domains/{domainName}/objects/{PathDN}** API endpoint.  It is left to the caller to determine if the objects API should be called to collect more data on the member.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/groupid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adGroup",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adGroup"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/domains/{domainName}/objects": {
+      "get": {
+        "tags": [
+          "Objects"
+        ],
+        "summary": "Find Objects",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria.\n",
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPFilter"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ]
+      }
+    },
+    "/domains/{domainName}/objects/{PathDN}": {
+      "get": {
+        "tags": [
+          "Objects"
+        ],
+        "summary": "Get Object",
+        "description": "Returns a generic **adObject** object",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          },
+          {
+            "$ref": "#/components/parameters/PathDN"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPAttributes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adObject",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adGroup"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/500"
+          },
+          "404": {
+            "$ref": "#/components/responses/500"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "apiCollection": {
+        "$ref": "../../Includes/apiCollection.json"
+      },
+      "apiError": {
+        "$ref": "../../Includes/apiError.json"
+      },
+      "adObject": {
+        "type": "object",
+        "properties": {
+          "dn": {
+            "description": "the DistinguishedName of the AD Object(User, Group, OU, etc).",
+            "type": "string"
+          },
+          "name": {
+            "description": "the internal name of the AD object",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "the display name for the AD object",
+            "type": "string"
+          },
+          "classList": {
+            "description": "a list of AD classes this object is based on",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "AD class name"
+            }
+          },
+          "domainName": {
+            "type": "string",
+            "readOnly": true,
+            "description": "the netBIOS domain name that this object is a member of"
+          },
+          "attributes": {
+            "type": "object",
+            "description": "a dictionary (or associative array) of LDAP attribute names and their corresponding values."
+          },
+          "isContainer": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a container or an OU, which may contain other objects"
+          },
+          "isUser": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a user object"
+          },
+          "isGroup": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a group object"
+          },
+          "isComputer": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a computer object"
+          },
+          "isForeignSecurityPrincipal": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates whether this object is a foreign security principal that exists in another domain or forest"
+          }
+        }
+      },
+      "adDomain": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "fqdn": {
+                "description": "the FQDN of the domain",
+                "type": "string"
+              },
+              "sites": {
+                "description": "an array of valid site names within the domain.\nA site name can be used on some endpoints to force a change to occur in that site before replicating out to other sites\n",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "adUser": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "userid": {
+                "description": "the unique userid of the user; comes from the LDAP *sAMAccountName* attribute",
+                "type": "string"
+              },
+              "firstName": {
+                "description": "the user's first name(given name); comes from the LDAP *givenName* attribute",
+                "type": "string"
+              },
+              "lastName": {
+                "description": "the user's last name(surname); comes from the LDAP *sn* attribute",
+                "type": "string"
+              },
+              "enabled": {
+                "description": "indicates if the account is enabled or not",
+                "type": "boolean"
+              },
+              "lockedOut": {
+                "description": "TRUE if the account is locked out; Note that the **LockedOut** property cannot be programtically set to TRUE; it can only be set to FALSE to unlock the account",
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "adGroup": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "groupType": {
+                "description": "The type of group",
+                "type": "string",
+                "enum": [
+                  "SystemGroup",
+                  "GlobalGroup",
+                  "DomainLocalGroup",
+                  "UniversalGroup",
+                  "AuthManBasicGroup",
+                  "AuthManQueryGroup",
+                  "SecurityEnabled"
+                ]
+              },
+              "isScurityGroup": {
+                "description": "Indicates if this is a security group or not",
+                "readOnly": true,
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "adGeneratedPassword": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "description": "the newly generated password",
+            "type": "string"
+          },
+          "expires": {
+            "description": "the UTC date/time that the password expires, in ISO 8601 string\nformat\n",
+            "type": "string"
+          }
+        }
+      },
+      "adNewUserBase": {
+        "type": "object",
+        "required": [
+          "userid",
+          "parentOU",
+          "ticket"
+        ],
+        "properties": {
+          "userid": {
+            "description": "the user id(sAMAccountName) to create",
+            "type": "string"
+          },
+          "parentOU": {
+            "description": "The DN of the OU in which to create the new user/service account\n",
+            "type": "string"
+          },
+          "ticket": {
+            "description": "CORE ticket number authorizing the creation of the new user/service account\nmay not be needed if managers can do this directly\n",
+            "type": "string"
+          }
+        }
+      },
+      "adNewServiceAccount": {
+        "required": [
+          "distributionList",
+          "owner",
+          "fullName"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adNewUserBase"
+          },
+          {
+            "properties": {
+              "distributionList": {
+                "description": "The email address of a distribution list(DL) that serves as a Point of Contact for the service account.  The DL should contain at least one person that is responsible for the account \n",
+                "type": "string"
+              },
+              "owner": {
+                "description": "the name of the person, department, team, etc.... that is responsible for the service account\n",
+                "type": "string"
+              },
+              "fullName": {
+                "description": "A descriptive name for the service account\n",
+                "type": "string"
+              },
+              "description": {
+                "description": "(Optional) A brief description of what the account is used for\n",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "adNewUserAccount": {
+        "required": [
+          "firstName",
+          "lastName",
+          "employeeId",
+          "linuxTech"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adNewUserBase"
+          },
+          {
+            "properties": {
+              "firstName": {
+                "description": "the first name of the person using the account\n",
+                "type": "string"
+              },
+              "lastName": {
+                "description": "the last name of the person using the account\n",
+                "type": "string"
+              },
+              "employeeId": {
+                "description": "the employee id of the person using the account.  this is VERY important to get right as this is used by Password Manager and Customer Access Manager\n",
+                "type": "string"
+              },
+              "linuxTech": {
+                "description": "If **true**, additional UNIX/Linux attributes will be set\n",
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "domainName": {
+        "name": "domainName",
+        "in": "path",
+        "description": "The netBIOS name of the domain",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "userid": {
+        "name": "userid",
+        "in": "path",
+        "description": "either the sAMAccount name or the DistinguishedName(DN) of the user to retrieve\n",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "custUserid": {
+        "name": "custUserid",
+        "in": "path",
+        "description": "either the sAMAccount name or the DistinguishedName(DN) of the user to grant/revoke access.  \n\nThe sAMAccount name or the CN portion of the Distinguished Name must end with **.cust** \n",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "groupid": {
+        "name": "groupid",
+        "in": "path",
+        "description": "either the sAMAccount name or the DistinguishedName(DN) of the group \n",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Site": {
+        "name": "site",
+        "in": "query",
+        "description": "AD Site name.  When making a change the API will connect to a Domain Controller in this site to make the change.  The AD replication topology will replicate the change(s) from there.\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "OUPath": {
+        "name": "path",
+        "in": "query",
+        "description": "the DistinguishedName(DN) of the container or OU to be used as the root level of the search.  Only the container and its child containers will be searched for matching objects\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "OUPathRequired": {
+        "name": "path",
+        "in": "query",
+        "required": true,
+        "description": "the DistinguishedName(DN) of the container or OU to be used as the root level of the search.  Only the container and its child containers will be searched for matching objects\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "DN": {
+        "name": "dn",
+        "in": "query",
+        "required": true,
+        "description": "the DistinguishedName(DN) of the object to retrieve\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PathDN": {
+        "name": "dn",
+        "in": "path",
+        "required": true,
+        "description": "the DistinguishedName(DN) of the object to retrieve\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "LDAPFilter": {
+        "name": "filter",
+        "in": "query",
+        "required": true,
+        "description": "a valid LDAP filter.  Only objects that match the given filter will be returned\n\nRefer to https://technet.microsoft.com/en-us/library/aa996205%28v=exchg.65%29.aspx?f=255&MSPPError=-2147217396 for help writing LDAP filters\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "LDAPAttributes": {
+        "name": "attributes",
+        "in": "query",
+        "description": "[OPTIONAL] a comma-separated list(with no spaces) of valid LDAP attribute names.\n\nThe values for each attribute will be returned in the \"attributes\" property of the returned object.  if the attribute name does not exist or has no value, its \"attribute\" property in the returned object will be set to NULL\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "account": {
+        "name": "account",
+        "in": "path",
+        "description": "CORE account number",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "The requested AD object was created. a link to the newly created object is returned in the headers\n"
+      },
+      "204": {
+        "description": "The request was successful, but no data is returned\n"
+      },
+      "400": {
+        "description": "There was something wrong with the input data either in the body of the request or in the querystring portion of the URL.  The specific error will be returned in the body of the HTTp Response.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "- You do not have the necessary permission(s) to perform this action\n- the Identity token was not provided in the Header\n- the Identity token provided in the header has expired\n"
+      },
+      "404": {
+        "description": "The item you are looking for was not found.\n\nThis could be any of the following\n  - the domain specified in the URL was not found\n  - the account specified in the URL was not found\n  - the AD object(user, group, computer, etc) specified in the URL was not found\n"
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/apiError"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "authTokenRequired": {
+        "name": "X-Auth-Token",
+        "type": "apiKey",
+        "in": "header",
+        "description": "a valid Identity token must be provided in the header of the request"
+      },
+      "userMatch": {
+        "name": "X-Auth-Token",
+        "type": "apiKey",
+        "in": "header",
+        "description": "a valid Identity token must be provided in the header of the request.  Additionally, the employeeid number of the user associated with the token must match the employeeid of the user account the password is being set on.  More simply stated, the user account being changed and the user account MAKING the change must be *owned* by the same person."
+      }
+    }
+  }
+}

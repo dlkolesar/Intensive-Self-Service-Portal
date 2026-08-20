@@ -1,0 +1,18 @@
+﻿scaffold-dbcontext 'Data Source=10.10.97.94;Initial Catalog=Corporate_DMART;Integrated Security=False;User ID=SS_Read;Password=RvkifoNw1xzp;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False' Microsoft.EntityFrameworkCore.SqlServer -verbose -Force
+
+
+after running:
+
+1) comment out the code in the OnConifiguring() method
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+          // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+          //  optionsBuilder.UseSqlServer(@"Data Source=10.10.97.94;Initial Catalog=Corporate_DMART;Integrated Security=False;User ID=SS_Read;Password=RvkifoNw1xzp;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        }
+
+2) Add a new constructor
+		public Corporate_DMARTContext(DbContextOptions<Corporate_DMARTContext> options) : base(options) { }
+
+
+
+3) Rebuild/ReCompile

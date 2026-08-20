@@ -1,0 +1,39 @@
+
+
+    <form>
+       <mat-card>
+       <mat-card-content >
+          <div fxLayout="row" fxLayoutAlign="left start" fxLayoutGap="8px"
+                class="full-width" >
+               <div fxFlex="40%"  class="border-primary scrollable"  [style.height.px]="componentHeight">
+                        <strong>Select object(s) to be migrated from the Intensive domain(s)</strong><br>
+                        <ss-ad-object-tree domain="intensive" 
+                                        account="3101" 
+                                        multiple="true"
+                                        expandAll="true"
+                                        showQuickSelect="true"
+                                        (selectionChange)="SelectionChanged($event)">
+                        </ss-ad-object-tree>
+            </div>
+            <div fxFlex  class="centered middle">
+                <button type="submit" mat-raised-button color="primary" 
+                            (click)="GetOptions()">
+                    <mat-icon>forward</mat-icon>
+                         Migrate Selected Objects
+                    <mat-icon>forward</mat-icon>
+                </button>
+            </div>
+            
+            <div fxFlex="40%" class="scrollable border-primary" [style.height.px]="componentHeight">
+                    <strong>Migrated Objects</strong><br>
+                    <!-- <ss-ad-object-tree domain="globalrs" 
+                                account="3101" 
+                                expandAll="true">
+                    </ss-ad-object-tree> -->
+            </div>
+          </div>
+            
+        </mat-card-content>
+       
+      </mat-card>
+    </form>

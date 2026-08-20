@@ -1,0 +1,22 @@
+{
+        "type": "object",
+        "description": "Contains error information",
+        "properties": {
+          "errorCode": {
+            "type": "integer",
+            "description": "internal error code that identifies the specific error.Most error codes will be used to generate events in the Windows Event Log on the API server"
+          },
+          "message": {
+            "type": "string",
+            "description": "a brief error message that can be display for the user"
+          },
+          "help": {
+            "type": "string",
+            "description": "URL to retrieve the documentation for this error, which will explain the nature of the error in detail, as well as providing troubleshooting and/or resolution steps"
+          },
+          "exceptionThrown": {
+            "type": "object",
+            "description": "The system exception that was thrown"
+          }
+        }
+      }

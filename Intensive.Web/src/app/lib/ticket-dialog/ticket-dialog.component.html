@@ -1,0 +1,29 @@
+
+<div mat-dialog class="ss-ticket-dialog">
+  <form #ticketForm="ngForm">
+    <h1 mat-dialog-title>
+      <mat-icon color="accent">help</mat-icon>
+      Enter CORE Ticket Number
+    </h1>
+    <mat-dialog-content>
+      <mat-form-field>
+        <input matInput type="text" name="ticketnumber" 
+              [formControl]="ticketNumberFormControl"
+              [(ngModel)]="ticketNumber"
+              placeholder="CORE ticket number">
+              <mat-error *ngIf="ticketNumberFormControl.invalid">A valid CORE ticket number is required</mat-error>
+      </mat-form-field>
+
+    </mat-dialog-content>
+    <mat-dialog-actions style="float:right">
+        <button mat-button  color="accent" 
+                mat-dialog-close 
+                (click)="close">Cancel</button>
+      <button mat-raised-button  
+              color="primary" 
+              (click)="submit()">
+          OK
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>

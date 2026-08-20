@@ -1,0 +1,21 @@
+12/06/2019 09:30:17 Intensive.API.Auditing [1] ***** API starting up *****
+12/06/2019 09:30:20 Intensive.API.Auditing [4] Failed to determine the https port for redirect.
+12/06/2019 09:30:24 Intensive.API.Auditing [4] Searching Audit Trail Entries....
+12/06/2019 09:30:26 Intensive.API.Auditing [4] results: 0
+12/06/2019 09:30:26 Intensive.API.Auditing [4] Found 0 matching entries
+12/06/2019 09:30:26 Intensive.API.Auditing [4] HTTP "GET" "/" responded 200 in 6092.9442 ms
+12/06/2019 09:30:26 Intensive.API.Auditing [7] HTTP "GET" "/favicon.ico" responded 400 in 19.7546 ms
+12/06/2019 09:31:04 Intensive.API.Auditing [1] ***** API starting up *****
+12/06/2019 09:31:11 Intensive.API.Auditing [8] Failed to determine the https port for redirect.
+12/06/2019 09:31:15 Intensive.API.Auditing [8] Searching Audit Trail Entries....
+12/06/2019 09:31:16 Intensive.API.Auditing [8] results: 0
+12/06/2019 09:31:16 Intensive.API.Auditing [8] Found 0 matching entries
+12/06/2019 09:31:16 Intensive.API.Auditing [8] HTTP "GET" "/" responded 200 in 5011.6264 ms
+12/06/2019 09:31:16 Intensive.API.Auditing [4] HTTP "GET" "/favicon.ico" responded 400 in 19.5159 ms
+12/06/2019 09:43:15 Intensive.API.Auditing [1] ***** API starting up *****
+12/06/2019 09:43:16 Intensive.API.Auditing [4] Failed to determine the https port for redirect.
+12/06/2019 09:43:19 Intensive.API.Auditing [4] Searching Audit Trail Entries....
+12/06/2019 09:43:21 Intensive.API.Auditing [4] results: 0
+12/06/2019 09:43:21 Intensive.API.Auditing [4] Found 0 matching entries
+12/06/2019 09:43:21 Intensive.API.Auditing [4] HTTP "GET" "/" responded 200 in 4839.8942 ms
+12/06/2019 09:43:21 Intensive.API.Auditing [5] HTTP "GET" "/favicon.ico" responded 400 in 26.0468 ms

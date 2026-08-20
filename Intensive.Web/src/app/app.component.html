@@ -1,0 +1,151 @@
+
+
+
+
+ <mat-sidenav-container fullscreen>
+  <mat-sidenav #sidenav mode="over">
+    <mat-toolbar color="primary"></mat-toolbar>
+    <mat-accordion displayMode="default" multi="false">
+
+        <mat-expansion-panel class="mat-expansion-demo-width" #adPanel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Identity and Access Management(AD)</mat-panel-title>
+            </mat-expansion-panel-header>
+                <ul class="navlist">
+                    <li class="navitem"  (click)="routeTo(['/', 'ad', 'passwordmanager'], {queryParams: null});sidenav.close()"><a class="navlink">Password Manager</a></li>
+                    <li class="navitem"  (click)="routeTo(['/', 'ad', 'customeraccess'], {queryParams: null});sidenav.close()"><a class="navlink">Customer Access Manager</a></li>
+                    <li >
+                        <span class="navlink"><strong>Reports</strong></span>
+                        <ul class="navsublist">
+                            <li class="navitem"><a href="https://sage.rackspace.com:8000/en-US/app/search/intensive_ad_lockout_tracker?form.user=*&form.host=*&form.field1.earliest=-24h%40h&form.field1.latest=now&form.time.earliest=-30d%40d&form.time.latest=now" target="_blank" class="navlink">Account Lockout Report(Splunk)</a></li>
+                            <li class="navitem" (click)="routeTo(['/', 'audit'], {queryParams: {systemid: 11}});sidenav.close()"><a class="navlink">Audit Trail</a></li>
+                        </ul>
+                    </li>
+                </ul>
+        </mat-expansion-panel>
+        <!-- <mat-expansion-panel class="mat-expansion-demo-width" #linpatchPanel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>Patching(Linux)</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul class="navlist">
+            <li class="navitem" (click)="routeTo(['/', account.number, 'patching', 'linux'], {queryParams: null});sidenav.close()"><a class="navlink">Dashboard</a></li>
+            <li class="navitem" (click)="routeTo(['/', account.number,  'patching', 'linux', 'config'], {queryParams: null});sidenav.close()"><a class="navlink">Configuration</a></li>
+            <li class="navitem" (click)="routeTo(['/', account.number,  'patching', 'linux', 'channels'], {queryParams: null});sidenav.close()"><a class="navlink">Channel/Package Explorer</a></li>
+            <li class="navitem" (click)="routeTo(['/', account.number, 'patching', 'linux', 'password'], {queryParams: null});sidenav.close()"><a class="navlink">One Time Password</a></li>
+            <li *ngIf="(account)">
+                <span class="navlink"><strong>Private Cloud</strong></span>
+                <ul class="navsublist">
+                    <li class="navitem" (click)="routeTo(['/', account.number,  'patching','linux','cloud','activation'], {queryParams: null});sidenav.close()"><a class="navlink">Create Activation Key &amp; <i>How To</i></a></li>
+                    <li class="navitem" (click)="routeTo(['/', account.number,  'patching','linux','cloud','howto'], {queryParams: null});sidenav.close()"><a class="navlink">Re-Create <i>How To</i></a></li>
+                    <li class="navitem" (click)="routeTo(['/', account.number,  'patching','linux','reports','groups'], {queryParams: null});sidenav.close()"><a class="navlink">Remove Activation </a></li>
+                </ul>
+            </li>
+
+            <li>
+                <span class="navlink"><strong>Reports</strong></span>
+                <ul class="navsublist">
+                    <li class="navitem"  (click)="routeTo(['/', account.number,  'patching','linux','reports','updates'], {queryParams: null});sidenav.close()"><a class="navlink">Available Updates</a></li>
+                    <li class="navitem"  (click)="routeTo(['/', account.number,  'patching','linux','reports','osaudit'], {queryParams: null});sidenav.close()"><a class="navlink">OS</a></li>
+                    <li class="navitem"  (click)="routeTo(['/', account.number,  'patching','linux','reports','groups'], {queryParams: null});sidenav.close()"><a class="navlink">Patching Groups</a></li>
+                    <li class="navitem"  (click)="routeTo(['/', account.number,  'patching','linux','reports','channels'], {queryParams: null});sidenav.close()"><a class="navlink">Channel Report</a></li>
+                    <li class="navitem"  (click)="routeTo(['/', account.number,  'patching','linux','reports','pkgs'], {queryParams: null});sidenav.close()"><a class="navlink">Package Report</a></li>
+                    <li class="navitem"  (click)="routeTo(['/', account.number,  'patching','linux','reports','updates'], {queryParams: null});sidenav.close()"><a class="navlink">Last Checkin</a></li>
+                    <li class="navitem"  (click)="routeTo(['/', account.number, 'audit'], {queryParams: {systemid: 16}});sidenav.close()"><a class="navlink">Audit Trail</a></li>
+                </ul>
+            </li>
+            <li class="navitem" (click)="routeTo(['/', account.number, 'patching', 'linux', 'faq'], {queryParams: null});sidenav.close()"><a class="navlink">FAQ</a></li>
+        </ul>
+    </mat-expansion-panel> -->
+    <mat-expansion-panel class="mat-expansion-demo-width" #winpatchPanel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>Patching(Windows)</mat-panel-title>
+        </mat-expansion-panel-header>
+            <ul class="navlist">
+                <li class="navitem"  (click)="routeToAccount(['/', account.number, 'windowspatching'], {queryParams: null});sidenav.close()"><a class="navlink">Dashboard</a></li>
+                <li class="navitem"  (click)="routeToAccount(['/', account.number, 'windowspatching', 'config'], {queryParams: null});sidenav.close()"><a class="navlink">Configuration</a></li>
+                <li >
+                    <span class="navlink"><strong>Reports</strong></span>
+                    <ul class="navsublist">
+                        <!-- <li class="navitem"  (click)="routeToAccount(['/', account.number,  'windowspatching','reports','patches'], {queryParams: null});sidenav.close()"><a class="navlink">Patches</a></li>  -->
+                        <li class="navitem"  (click)="routeToAccount(['/', account.number,  'windowspatching','reports','missingpatches'], {queryParams: null});sidenav.close()"><a class="navlink">Missing Patches</a></li>
+                        <li class="navitem"  (click)="routeToAccount(['/', account.number, 'windowspatching','reports','configsummary'], {queryParams: null});sidenav.close()"><a class="navlink">Configuration Summary</a></li>
+                        <li class="navitem" (click)="routeTo(['/', 'audit'], {queryParams: {systemid: 14}});sidenav.close()"><a class="navlink">Audit Trail</a></li>
+                    </ul>
+                </li>
+
+
+                
+                <li *ngIf="userIsPatchingAdmin">
+                    <span class="navlink" ><strong>Admin</strong></span>
+                    <ul class="navsublist">
+                        <li >
+                            <span class="navlink"><strong>Ticket Generator</strong></span>
+                            <ul class="navsublist">
+                                <li class="navitem" (click)="routeTo(['/', 'windowspatching','ticketgenerator','config'], {queryParams: null});sidenav.close()"><a class="navlink">Configuration</a></li>
+                                <li class="navitem" (click)="routeTo(['/', 'windowspatching','ticketgenerator','progress'], {queryParams: null});sidenav.close()"><a class="navlink">Current Progress</a></li>
+                                <li class="navitem" (click)="routeTo(['/', 'windowspatching','ticketgenerator','preview'], {queryParams: null});sidenav.close()"><a class="navlink">Ticket Preview</a></li>
+                                <li class="navitem" (click)="routeTo(['/', 'windowspatching','ticketgenerator','update'], {queryParams: null});sidenav.close()"><a class="navlink">Update Tickets</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+    </mat-expansion-panel>
+    <!-- <mat-expansion-panel class="mat-expansion-demo-width" #winpatchPanel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Other/Misc.</mat-panel-title>
+            </mat-expansion-panel-header>
+                <ul class="navlist">
+                    <li class="navitem"  (click)="routeToAccount(['/', account.number, 'tags', 'manager'], {queryParams: null});sidenav.close()"><a class="navlink">Manage Server Tags</a></li>
+                </ul>
+        </mat-expansion-panel> -->
+</mat-accordion>   
+      
+  </mat-sidenav>
+  <mat-toolbar color="primary">  
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+            class="full-width">
+        <div fxFlex="none" >
+            <button mat-icon-button type="button" (click)="sidenav.open()">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </div>
+        <div fxFlex="grow" class="ss-toolbar-title" >
+            <button mat-button (click)="routeTo(['/'], {queryParams: null})">
+                <h3>{{title}}</h3>
+            </button>
+        </div>
+        <!-- <div fxFlex="grow" class="ss-toolbar-account" *ngIf="(account) && (account.number>0)"> -->
+        <div fxFlex="grow" class="ss-toolbar-account" *ngIf="account && account.show && account.number>0">
+            <button mat-button type="button" 
+                (click)="routeTo(['/', account.number], {queryParams: null})"> 
+                <h2>{{account.number}}: {{account.name}}</h2>
+            </button>
+        </div>
+        <div fxFlex="grow" class="ss-toolbar-help">
+            <button mat-icon-button disableRipple="true" type="button"
+                [matMenuTriggerFor]="menuHelp">
+                <mat-icon>help</mat-icon>
+            </button>
+            <mat-menu #menuHelp="matMenu" xPosition="before" 
+                    yPosition="below" overlapTrigger="false">
+                <a mat-menu-item href="https://one.rackspace.com/display/SegSup/Intensive+Self+Service+Portal" target="_blank">Portal Wiki</a>
+                <!-- <a mat-menu-item href="/apidocs">API Documentation</a> -->
+                <a mat-menu-item routerLink="/apidocs">API Documentation</a>
+                
+                <a mat-menu-item href="https://one.rackspace.com/display/SegSup/Segment+Support+Home" target="_blank" >Segment Support Wiki</a>
+                <a mat-menu-item href="https://one.rackspace.com/display/SegSup/Development+Intake+Forms"  target="_blank">Report a Bug</a>
+                <a mat-menu-item href="https://one.rackspace.com/display/SegSup/Development+Intake+Forms"  target="_blank">Request a Feature</a>
+                
+                <a mat-menu-item (click)="openAboutDialog()">About</a>
+            </mat-menu>
+        </div>
+    </div>
+
+  </mat-toolbar>
+  <div class="content">
+      <router-outlet></router-outlet>
+  </div>
+</mat-sidenav-container>
+
+

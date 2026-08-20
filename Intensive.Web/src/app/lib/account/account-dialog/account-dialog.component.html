@@ -1,0 +1,25 @@
+
+<div mat-dialog class="ss-account-dialog">
+  <form #acctForm="ngForm">
+    <h1 mat-dialog-title>
+      <mat-icon color="accent">help</mat-icon>
+      Enter CORE Account Number
+    </h1>
+    <mat-dialog-content>
+      <mat-form-field>
+        <input matInput type="number" name="accountnumber" 
+              [(ngModel)]="accountNumber"
+              placeholder="numeric account number"
+              required>
+      </mat-form-field>
+
+    </mat-dialog-content>
+    <mat-dialog-actions style="float:right">
+        <button mat-button  color="accent" 
+                mat-dialog-close 
+                (click)="close">Cancel</button>
+      <button type="submit" mat-raised-button  color="primary" 
+              [mat-dialog-close]="accountNumber">OK</button>
+    </mat-dialog-actions>
+  </form>
+</div>

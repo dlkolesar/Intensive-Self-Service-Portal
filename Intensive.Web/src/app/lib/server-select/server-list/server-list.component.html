@@ -1,0 +1,43 @@
+<!-- <div class="ss-server-list scrollable border-primary" 
+    [style.height.px]="componentHeight">
+  <mat-selection-list (selectionChange)="selectionChange($event)">
+    <mat-list-option *ngFor="let s of servers" 
+                      checkboxPosition="before"
+                      [selected]="s.checked"
+                      [value]="s.deviceNumber"
+                      (click)="optionClick($event, s)"
+                      >
+          {{s.name}}
+    </mat-list-option>
+  </mat-selection-list>
+</div> -->
+
+<div class="ss-server-list scrollable border-primary" 
+      [style.height.px]="componentHeight">
+  <mat-list dense>
+      <mat-list-item *ngFor="let s of servers"
+           [class.mat-list-item-active]="s.deviceNumber==selectedServer.deviceNumber">
+          <mat-icon [style.color] = "s.statusIconColor" style="cursor:default"
+              [attr.title]="s.statusMessage" 
+              matTooltipPosition="left"
+              mat-list-icon>
+              {{s.statusIcon}}
+          </mat-icon>
+          <mat-checkbox [name]="s.deviceNumber"  
+              [checked]="s.checked" (change)="onCheckboxChanged($event, s)">
+          </mat-checkbox>
+          
+          <span style="cursor:pointer;margin-left:8px" 
+                (click)="onServerSelected($event,s)" >
+                <em *ngIf="!standardServerName(s.name)">
+                    {{s.deviceNumber}}: 
+                </em>
+              {{s.name}}
+          </span>
+          <!-- <span style="cursor:pointer;margin-left:8px" 
+                (click)="onServerSelected($event,s)" >
+              {{getDisplayName(s)}}
+          </span> -->
+      </mat-list-item>
+  </mat-list>
+</div>

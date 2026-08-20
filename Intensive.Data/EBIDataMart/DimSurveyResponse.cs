@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Intensive.Data.EBIDataMart
+{
+    public partial class DimSurveyResponse
+    {
+        public int SurveyResponseKey { get; set; }
+        public string SurveyResponseNk { get; set; }
+        public int? SurveyResponseIsComplete { get; set; }
+        public int SurveyResponseLastPageNumberViewed { get; set; }
+        public DateTime EffectiveStartDate { get; set; }
+        public DateTime EffectiveEndDate { get; set; }
+        public DateTime RecordCreatedDatetime { get; set; }
+        public string RecordCreatedBy { get; set; }
+        public DateTime RecordUpdatedDatetime { get; set; }
+        public string RecordUpdatedBy { get; set; }
+        public string SourceSystemName { get; set; }
+        public int CurrentRecord { get; set; }
+    }
+}

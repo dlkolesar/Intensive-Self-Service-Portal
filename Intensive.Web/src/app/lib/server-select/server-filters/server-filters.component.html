@@ -1,0 +1,64 @@
+<div fxLayout="column" fxLayoutAlign="left start" 
+                       fxLayoutGap="16px" 
+                       class="ss-server-filters"
+                       style="width:180px"
+                      >
+  <div fxFlex>
+    <mat-card class="ss-server-filters-card">
+      <mat-card-content>
+          <mat-form-field style="width:120px">
+              <input matInput type="text" 
+                     placeholder="Filter by Name"
+                    (keyup)="onNameFilterKeyUp($event)">
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div fxFlex *ngIf="dcFilterList && dcFilterList.length>1">
+      <mat-card class="ss-server-filters-card">
+        <mat-card-content>
+            <mat-card-subtitle>Filter by Datacenter</mat-card-subtitle>
+            <mat-selection-list (selectionChange)="onDCFilterChange($event)">
+                <mat-list-option *ngFor="let dc of dcFilterList" 
+                                checkboxPosition="before" 
+                                [value]="dc">
+                                {{dc}}
+                </mat-list-option>
+              </mat-selection-list>
+        </mat-card-content>
+      </mat-card>
+   </div>
+  
+   <!-- 
+    <div fxFlex="none">
+      <mat-card>
+        <mat-card-content>
+            <mat-input-container>
+                <input matInput type="text" placeholder="Filter by Ticket">
+          </mat-input-container>
+        </mat-card-content>
+      </mat-card>
+    </div>
+   -->
+
+   <!-- <div fxFlex *ngIf="tagFilterList && tagFilterList.length>0">
+    <mat-card class="ss-server-filters-card">
+      <mat-card-content>
+        <mat-card-subtitle>Filter by Tag(s)</mat-card-subtitle>
+        <div class="tag-list scrollable"
+          [style.height.px]="tagListHeight">
+            <mat-selection-list dense (selectionChange)="onTagFilterChange($event)">
+              <mat-list-option *ngFor="let t of tagFilterList"
+                              checkboxPosition="before" 
+                              [value]="t">
+                              {{t.tagName}}
+              </mat-list-option>
+            </mat-selection-list>
+          
+         </div>
+      </mat-card-content>
+    </mat-card>
+ </div> -->
+  
+</div>

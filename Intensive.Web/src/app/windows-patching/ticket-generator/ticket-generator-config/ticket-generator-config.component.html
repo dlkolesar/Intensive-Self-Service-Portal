@@ -1,0 +1,138 @@
+
+
+<div fxLayout="row" fxLayoutAlign="space-around center">
+  <div fxFlex></div>
+  <div fxFlex >
+      <mat-card>
+          <form #configForm="ngForm" novalidate 
+                            (ngSubmit)="OnSubmit()">
+            <mat-card-title>Patching Ticket Generator Configuration</mat-card-title>
+            <div fxLayout="row" fxLayoutAlign="left start" *ngIf="config">
+                <div fxFlex="grow">
+                    <mat-card>
+                    <mat-card-content>
+                        <mat-tab-group dynamicHeight="true" style="margin-top:32px">
+                            <mat-tab label="CORE" >
+                                <br>
+                                <mat-radio-group [(ngModel)]="config.coreURL" name="coreURL">
+                                    <mat-radio-button value="https://ws.core.rackspace.com">Generate tickets in the Production CORE environment</mat-radio-button>
+                                    <br />
+                                    <mat-radio-button value="https://staging.core.rackspace.com">Generate tickets in the STAGING CORE environment</mat-radio-button>
+                                </mat-radio-group>
+        
+                                <br />
+                                <br />
+                                <br />
+                                <mat-form-field>
+                                    <input matInput name="coreUser"type="text" 
+                                    [(ngModel)]="config.coreUser"
+                                    placeholder="CORE User ID"
+                                    required
+                                    >
+                                </mat-form-field>
+        
+        
+                                <mat-form-field>
+                                    <input matInput name="corePwd" type="password" 
+                                    [(ngModel)]="config.corePwd"
+                                    placeholder="CORE User Password"
+                                    required
+                                    >
+                                </mat-form-field>
+                            </mat-tab> 
+                            <mat-tab label="Ticket Template">
+                                    <mat-form-field style="width:100%">
+                                        <textarea matInput name="tktTemplate" type="text" 
+                                        [(ngModel)]="config.ticketTemplate"
+                                        placeholder="Ticket Template"
+                                        [rows]="contentHeight / 16"
+                                        required
+                                        ></textarea>
+                                    </mat-form-field>
+                            </mat-tab>
+                            <mat-tab label="Updates" >
+                                
+                                <mat-form-field style="width:100%">
+                                    <textarea matInput name="updatesApproved" type="text" 
+                                    [(ngModel)]="config.approvedUpdates"
+                                    placeholder="Approved Updates"
+                                    [rows]="contentHeight / 48"
+                                    required></textarea>
+                                </mat-form-field>
+                                <br>
+                                <br>
+                                <mat-form-field style="width:100%">
+                                    <textarea matInput name="updatesDeclined" type="text" 
+                                    [(ngModel)]="config.declinedUpdates"
+                                    placeholder="Declined Updates"
+                                    [rows]="contentHeight / 48"></textarea>
+                                </mat-form-field>
+        
+                            </mat-tab>
+                            <mat-tab label="Errors" >
+                                <p><i>
+                                If the Ticket Generator throws any errors, an email that summarizes all errors will be sent
+                                using the information below.  If no errors occur, the email will not be sent
+                                </i></p>
+        
+                                <mat-form-field style="width:405px"
+                                    hintLabel=":<port#> may be added if a TCP port other than the default(25) is required"
+                                >
+                                    <input matInput name="smtpServer" type="text" 
+                                    [(ngModel)]="config.smtpServerName"
+                                    placeholder="SMTP Server Name/ip"
+                                    required
+                                    >
+                                </mat-form-field>
+        
+                                <br />
+                                <br />
+                                <mat-form-field>
+                                    <input matInput name="smtpUser"type="text" 
+                                    [(ngModel)]="config.smtpUser"
+                                    placeholder="SMTP User ID"
+                                    required
+                                    >
+                                </mat-form-field>
+        
+        
+                                <mat-form-field>
+                                    <input matInput name="smtpPwd" type="password" 
+                                    [(ngModel)]="config.smtpPwd"
+                                    placeholder="SMTP User Password"
+                                    required
+                                    >
+                                </mat-form-field>
+                                <br>
+                                <mat-form-field style="width:405px"
+                                    hintLabel="separate multiple entries with a semi-colon">
+                                    <input matInput name="emailRecipients"type="text" 
+                                    [(ngModel)]="config.emailRecipients"
+                                    placeholder="Send email to these addresses"
+                                    required
+                                    >
+                                </mat-form-field>
+
+                            </mat-tab>
+            
+                        </mat-tab-group>
+                      </mat-card-content>
+                    </mat-card>
+        
+                </div>
+                <div fxFlex="none" style="padding-left:24px">
+                    <button type="submit"
+                            mat-raised-button 
+                            [disabled]="configForm.invalid"
+                            color="primary" 
+                            class="full-width">
+                            Save changes
+                    </button>
+                </div>
+            </div>
+        </form>
+      </mat-card>
+  </div>
+  <div fxFlex></div>
+</div>
+  

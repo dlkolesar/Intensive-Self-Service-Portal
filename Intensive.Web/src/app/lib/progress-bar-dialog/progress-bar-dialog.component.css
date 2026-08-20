@@ -1,0 +1,13 @@
+
+.ss-progress-dialog{
+    width:400px;
+}
+.ss-progressText {
+    width:100%; 
+    text-align: center;
+}
+
+.ss-progressMsg {
+    width:100%; 
+    text-align: left;
+}

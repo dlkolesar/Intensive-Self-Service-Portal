@@ -1,0 +1,41 @@
+{
+  "winpatch": {
+    "systemId": 14,
+    "admins": ["dan.kolesar","andr5543", "tim2954", "chris.wiese","dani4559"],
+    "wsusGroups": [
+        {"name":"Custom",  "id":"00000000-0000-0000-0000-000000000000"},
+        {"name":"Early",   "id":"af85c342-4f0b-4a17-8bc9-e57a8f075a52"},
+        {"name":"Default", "id":"b73ca6ed-5727-47f3-84de-015e03f6a88a"},
+        {"name":"Delayed", "id":"78d47cbf-f7e5-42af-899e-8065a5e388b0"}
+    ],
+    "defaultNoAutoUpdate": "0",
+    "defaultUseWUServer": true,
+    "defaultAUOptions": "4",
+    "defaultNoAutoRebootWithLoggedOnUsers": false,
+    "defaultReleaseWeek":"2",
+    "defaultPatchingLevel":"1",
+    "defaultScheduledInstallTime": "2",
+    "defaultScheduleDay": {
+      "dfw": "3",
+      "hkg": "3",
+      "iad": "4",
+      "lon": "5",
+      "ord": "4",
+      "syd": "6",
+      "fra": "3"
+    },
+    "defaultWUServer": {
+      "dfw": "http://microsoftupdate.dfw1.rackspace.com",
+      "hkg": "http://microsoftupdate.hkg1.rackspace.com",
+      "iad": "http://microsoftupdate.iad1.rackspace.com",
+      "lon": "http://microsoftupdate.lon.rackspace.com",
+      "ord": "http://microsoftupdate.ord1.rackspace.com",
+      "syd": "http://microsoftupdate.syd2.rackspace.com",
+      "fra": "http://microsoftupdate.fra.rackspace.com"
+    }
+  },
+  "ad":{
+    "systemid": 11,
+    "accountAccessAge":10
+  }
+}

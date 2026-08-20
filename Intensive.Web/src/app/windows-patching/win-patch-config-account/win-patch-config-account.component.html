@@ -1,0 +1,14 @@
+<div class="win-patch-config-account">
+  <mat-slide-toggle [(ngModel)]="account.optedOut" 
+                    name="optOutAccount"
+                    (change)="AccountOptInOut()"
+                    >
+      Opt Out the Entire Account
+  </mat-slide-toggle>
+  <br />
+  <mat-slide-toggle [(ngModel)]="account.optedOutOfTicketing" 
+                    name="genTickets" 
+                    >
+      Opt Out of Patching Tickets
+  </mat-slide-toggle>
+</div>

@@ -1,0 +1,67 @@
+
+Release Notes v3.1.1 (Jun 2020)
+	[SSD-486] - WinPatch Portal incorrectly setting registry keys -- HOTFIX to correct issue found in EVNT0016484
+
+Release Notes v3.1.0
+	SSD-293 Corrected Patching Calendar scrolling
+	SSD-313 Correct CSV file name when exporting reports
+	SSD-324 Removed Purging logic from Server Import job
+	SSD-326 Advanced Patching process fails to update Job Status in db
+	SSD-292 Update Release Week from WSUS when pulling settings
+	SSD-342 Next Patch Date is calculated incorrectly
+		
+	NEW FEATURES
+		SSD-307 Added Account Refresh button
+
+
+
+Release Notes v3.0.2
+	New Feature - AD API	
+        --documentation at https://selfservice.intenive.int/apidocs
+		Intensive.Services.ActiveDirectory			1.0.0
+		Intensive.API.ActiveDirectory.Intensive		1.0.0
+		Intenive.API.ActiveDirectory.GlobalRS		1.0.0
+		
+	SSD-279 - Disable Day and Time dropdowns if PatchingLevel is MANUAL
+		Intensive.Web.SelfService 3.0.2
+	
+	SSD-309 Switching from Basic or Manual to Advanced Patching does not work
+		Intensive.Services.ARIC	1.0.2
+		Intensive.API.Patching 1.0.2
+	
+	SSD-311 Patching Ticket generator is creating Manual tickets in the wrong queue
+		Intensive.Utilities.Patching.TicketGenerator	3.0.1
+		Intensive.Services.Patching.TicketGenerator		1.0.1
+		Intensive.API.Patching	1.0.2
+
+	SSD-306 Patching Client Import Refinements
+		Intensive.Utilities.Import.Servers	(1.0.1)
+		Intensive.Utilities.Import.Settings	(1.0.1)
+	
+
+
+Release Notes v3.01
+	SSD-290 Erratic status icons displayed for Advanced Patching clients
+		Intensive.Web.SelfService(3.0.1) - made icons more consistent	
+		Intensive.API.Patching(1.0.1) - disabled server side caching	
+		Intensive.API.Patching(1.0.1) -	Services Updated	
+
+	SSD-291 Patching weeks in UI should be Monday thru Sunday
+		Intensive.Web.SelfService(3.0.1)	- changed calendar calculations; patching week runs Monday thru Sunday; Install Day dropdown box list changed to Monday-Sunday as well
+		Intensive.Web.SelfService(3.0.1)	- changed Selected Patching Date to bordered box rather than a shaded box to more explicitly indicate which week / day is selected.
+
+	SSD-294 Advanced Patching scheduled time is not displaying
+		Intensive.Web.SelfService(3.0.1)	- Used <string>.padStart to add padding
+		
+	SSD-297 WSUS ID not being set after Settings Pull or Client ID Reset
+		Intensive.Services.ARIC	(1.0.1)	- handled reboot flag = "true/false" as well as 1/0
+		Intensive.API.ARIC	(1.0.1)		- Services Updated	
+
+	SSD-299 ARIC API returns 500 when ARIC sets the job status to failed
+		Intensive.Services.ARIC(1.0.1)	- removed thrown exception
+		Intensive.API.ARIC	(1.0.1)	- removed catch block, Updated Services
+		
+	SSD-304 NoAutoRebootWithLoggedOnUsers being written to Registry as a string
+		Intensive.Web.SelfService(3.0.1) - NoAutoRebootWithLoggedOnUsers changed to set value = "1" or "0" instead of true/false
+	
+	

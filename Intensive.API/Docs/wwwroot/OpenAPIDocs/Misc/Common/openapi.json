@@ -1,0 +1,755 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Common/Shared API's",
+    "version": "v1",
+    "description": "This is a set of commonly used APIs that are not specific to any particular set of tools or subsystem(s)",
+    "contact": {
+      "name": "Rackspace Segment Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.selfservice.intensive.int/common/v1",
+      "description": "Production"
+    },
+    {
+      "url": "https://test.api.selfservice.intensive.int/common/v1",
+      "description": "Staging/Test"
+    },
+    {
+      "url": "https://beta.api.selfservice.intensive.int/common/v1",
+      "description": "Beta"
+    }
+  ],
+  "paths": {
+    "/accounts/{account}": {
+      "get": {
+        "tags": [
+          "CORE Account"
+        ],
+        "summary": "Get Account",
+        "description": "Get basic CORE account information",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CORE Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/coreAccount"
+                },
+                "example": {
+                  "number": 3101,
+                  "name": "SAI Global Compliance",
+                  "serviceLevel": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{account}/servers": {
+      "get": {
+        "tags": [
+          "CORE Servers"
+        ],
+        "summary": "Get Servers in the account",
+        "description": "Returns an ApiCollection object with URLS to each server within the account.  Note that these are servers that are represented somewhere in the Self Service Portal and will not necessarily be *every* server in the account\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/queryTag"
+          },
+          {
+            "$ref": "#/components/parameters/queryName"
+          },
+          {
+            "$ref": "#/components/parameters/queryDC"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 53,
+                  "resources": [
+                    "https://beta.api.selfservice.intensve.int/common/v1/accounts/3101/servers/52063",
+                    "https://beta.api.selfservice.intensve.int/common/v1/accounts/3101/servers/52073",
+                    "         :                       :                   :              ",
+                    "         :                       :                   :              ",
+                    "         :                       :                   :              ",
+                    "https://beta.api.selfservice.intensve.int/common/v1/accounts/3101/servers/945184",
+                    "https://beta.api.selfservice.intensve.int/common/v1/accounts/3101/servers/945381"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{account}/servers/{deviceNumber}": {
+      "get": {
+        "tags": [
+          "CORE Servers"
+        ],
+        "summary": "Get Server",
+        "description": "Return general information about a server",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "coreServer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/coreServer"
+                },
+                "example": {
+                  "deviceNumber": 52063,
+                  "wsusid": "0ab1660c-0e32-4bbe-9a97-f10c894e5e51",
+                  "nimBUSRobotID": null,
+                  "scomAgentID": null,
+                  "antiVirusID": null,
+                  "name": "52063-CELP-TE1.saiglobal.com",
+                  "account": 3101,
+                  "dataCenter": "IAD",
+                  "os": "Windows 2008 R2 Enterprise - 64 bit",
+                  "isCluster": false,
+                  "isClusterNode": false,
+                  "lastRefresh": "2018-10-03T07:00:14.18"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "the server does not exist in the database"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/tags": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Get public tags",
+        "description": "Returns an **ApiCollection** object with URLS to each public tag defined.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/tagid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 13,
+                  "resources": [
+                    "https://api.intensive.int/common/v1/tags/123",
+                    "https://api.intensive.int/common/v1/tags/456",
+                    "         :                       :          ",
+                    "         :                       :          ",
+                    "         :                       :          ",
+                    "https://api.intensive.int/common/v1/tags/654",
+                    "https://api.intensive.int/common/v1/tags/987"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/tags/{tagid}": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Get tag",
+        "description": "Returns a **Tag** object.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/tagid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tag"
+                },
+                "example": {
+                  "id": 0,
+                  "account": 123456,
+                  "tagName": "CustomTag_X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "_tagid_ was not found\n"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/accounts/{account}/tags": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Get account custom tags",
+        "description": "Returns an **ApiCollection** object with URLS to each public tag defined.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 13,
+                  "resources": [
+                    "https://api.intensive.int/common/v1/tags/123",
+                    "https://api.intensive.int/common/v1/tags/456",
+                    "         :                       :          ",
+                    "         :                       :          ",
+                    "         :                       :          ",
+                    "https://api.intensive.int/common/v1/tags/654",
+                    "https://api.intensive.int/common/v1/tags/987"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "_account_ is not a valid account number\n"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Create custom tag",
+        "description": "Creates new custom tag to be used solely within an account\n",
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          }
+        ],
+        "requestBody": {
+          "description": "the tag that is to be added to the the list of custom tags for the account\n",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tag"
+              },
+              "example": "CustomTag_A"
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "400": {
+            "description": "_account_ is not a valid account number\nThe tag is more than 15 characters long\n"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/accounts/{account}/tags/{tagid}": {
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Delete custom tag",
+        "description": "removes the given tag from the account's list of custom tags by using the _tagid_\n",
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/tagid"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/accounts/{account}/tags/{tag}": {
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Delete custom tag",
+        "description": "removes the given tag from the account's list of custom tags by using the tag text\n",
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/tag"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/accounts/{account}/servers/{deviceNumber}/tags": {
+      "get": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Get server tags",
+        "description": "Returns an **ApiCollection** object with URLS to each public tag defined.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 13,
+                  "resources": [
+                    "https://api.intensive.int/common/v1/tags/123",
+                    "https://api.intensive.int/common/v1/tags/456",
+                    "         :                       :          ",
+                    "         :                       :          ",
+                    "         :                       :          ",
+                    "https://api.intensive.int/common/v1/tags/654",
+                    "https://api.intensive.int/common/v1/tags/987"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "assign tag to server",
+        "description": "Assign a public or custom tag to a server\n",
+        "security": [
+          "authTokenRequired"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          }
+        ],
+        "requestBody": {
+          "description": "a _tag_ object to be assigned to the server\n",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tag"
+              },
+              "example": {
+                "id": "32,",
+                "account": "1234567,",
+                "tagName": "CustomTag_A"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Remove ALL server tag assignments",
+        "description": "removes ALL of the tags currently assigned to a server\n",
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/accounts/{account}/servers/{deviceNumber}/tags/{tagid}": {
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Remove server tag assignment",
+        "description": "removes the given tag from the server's list of assigned tags by using the _tagid_\n",
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          },
+          {
+            "$ref": "#/components/parameters/tagid"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/accounts/{account}/servers/{deviceNumber}/tags/{tag}": {
+      "delete": {
+        "tags": [
+          "Tags"
+        ],
+        "summary": "Remove server tag assignment",
+        "description": "removes the given tag from the server's list of assigned tags by using the tag text\n",
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          },
+          {
+            "$ref": "#/components/parameters/tag"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "apiCollection": {
+        "$ref": "../../Includes/apiCollection.json"
+      },
+      "apiError": {
+        "$ref": "../../Includes/apiError.json"
+      },
+      "coreAccount": {
+        "type": "object",
+        "description": "Contains basic information about a CORE Account",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "description": "the account number"
+          },
+          "name": {
+            "type": "string",
+            "description": "the account name"
+          },
+          "serviceLevel": {
+            "type": "integer",
+            "description": "account Service Level",
+            "enum": [
+              "Unknown",
+              "Managed",
+              "Intensive"
+            ]
+          }
+        }
+      },
+      "coreServer": {
+        "type": "object",
+        "description": "a CORE server",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "description": "the unique CORE device number"
+          },
+          "wsusid": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "the WSUS GUID for this server"
+          },
+          "nimbusRobotId": {
+            "type": "integer",
+            "nullable": true,
+            "description": "the nimBUS Robot ID for this server, typically <*account*>-<*devicenumber*>"
+          },
+          "scomAgentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "the SCOM Agent GUID for this server"
+          },
+          "antiVirusId": {
+            "type": "integer",
+            "nullable": true,
+            "description": "the Sophos Anti-Virus ID numberfor this server"
+          },
+          "name": {
+            "type": "string",
+            "description": "the name of the server as recorded in CORE"
+          },
+          "account": {
+            "type": "integer",
+            "description": "the CORE account number that this server is associated with"
+          },
+          "dataCenter": {
+            "type": "string",
+            "description": "the 3-4 character identifier for the data center where this server resides"
+          },
+          "os": {
+            "type": "string",
+            "description": "the name of the operating system installed on this server(future use)"
+          },
+          "isCluster": {
+            "type": "boolean",
+            "description": "indicates if this server is a virtual cluster"
+          },
+          "isClusterNode": {
+            "type": "boolean",
+            "description": "indicates if this server is a node of a cluster"
+          },
+          "lastRefresh": {
+            "type": "string",
+            "format": "date-time",
+            "description": "the date and time this server data was updated in the database"
+          }
+        }
+      },
+      "tag": {
+        "type": "object",
+        "description": "tag that can be assigned to one or more servers",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "'unique number automatically assigned by the database when the tag is created'\n"
+          },
+          "account": {
+            "type": "string",
+            "description": "the account number this custom tag is associated with"
+          },
+          "tagName": {
+            "type": "string",
+            "description": "the tag itself, i.e., the text",
+            "maxLength": 15
+          }
+        }
+      }
+    },
+    "responses": {
+      "204": {
+        "description": "Operation successfull; No Data Returned"
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/apiError"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "account": {
+        "name": "account",
+        "in": "path",
+        "description": "The CORE account number",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "tag": {
+        "name": "tag",
+        "in": "path",
+        "description": "the text of the tag",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "tagid": {
+        "name": "tagid",
+        "in": "path",
+        "description": "unique id number of the tag",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "deviceNumber": {
+        "name": "deviceNumber",
+        "in": "path",
+        "description": "CORE Device Number",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "queryTag": {
+        "name": "tag",
+        "in": "query",
+        "description": "[Optional] return servers that have ALL of the listed tags. Multiple tags should be separated by a comma and have no spaces in between them\n",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "queryName": {
+        "name": "name",
+        "in": "query",
+        "description": "[Optional] return servers whose name contains the characters given\n",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "queryDC": {
+        "name": "dc",
+        "in": "query",
+        "description": "[Optional] return servers that are in the given DC\n",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "securitySchemes": {
+      "authTokenRequired": {
+        "name": "X-Auth-Token",
+        "type": "apiKey",
+        "in": "header",
+        "description": "a valid Identity token must be provided in the header of the request"
+      }
+    }
+  }
+}

@@ -1,0 +1,85 @@
+
+<div fxLayout="row" fxLayoutAlign="left start">
+    <div fxFlex="grow">
+        <mat-card>
+            <mat-card-title>
+                <h3>Missing Patches Report</h3>
+            </mat-card-title>
+            <mat-card-content>
+                <div style="margin:auto;width:100%;" >
+                    <mat-card>
+                        <mat-card-content>
+                            <p class="color-warn" *ngIf="pctComplete>=100 && report.length==0">No servers were found with missing patches -- All servers are up to date on patches</p>
+
+                            <div class="full-width" style="display:inline-block">
+                                <button mat-button color="accent"
+                                    style="float:right" 
+                                    (click)="exportCSV('MissingPatchesReport-' + account.number +'.csv')">
+                                        Export to CSV
+                                </button>
+                            </div>
+                            <div [style.height.px]="contentHeight - 265" style="overflow:auto">
+                                <table mat-table #table [dataSource]="dsReport" matSort>  
+                                    <ng-container matColumnDef="name">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header > Server Name </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <mat-icon [style.color] = "row.statusIconColor"
+                                                [attr.title]="row.statusMessage" 
+                                                matTooltipPosition="right"
+                                                mat-list-icon>
+                                                {{row.statusIcon}}
+                                            </mat-icon>
+                                            <span>{{row.name}}</span>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="missingPatches">
+                                        <th mat-header-cell *matHeaderCellDef class="centered"> Missing Patches </th>
+                                        <td mat-cell *matCellDef="let row"> 
+                                            <div *ngIf="row.unSupportedOS">
+                                                    This server is running an older OS version that is no longer supported by Microsoft and does not receive new security updates.
+                                            </div>
+                                            <div fxLayout="row" fxLayoutAlign="left start" fxLayoutGap="10px"  *ngFor="let p of row.missingPatches">
+                                                <div fxFlex="none" [ngSwitch]="p.severity">
+                                                    <mat-icon *ngSwitchCase="'Critical'" mat-list-icon style="color:darkred" title="Critical">flag</mat-icon>
+                                                    <mat-icon *ngSwitchCase="'Important'" mat-list-icon style="color:darkorange" title="Important">flag</mat-icon>
+                                                    <mat-icon *ngSwitchCase="'Moderate'" mat-list-icon style="color:goldenrod" title="Moderate">flag</mat-icon>
+                                                    <mat-icon *ngSwitchDefault mat-list-icon style="color:darkblue" title="Low or Unspecified Severity">flag</mat-icon>
+                                                </div>
+                                                <div fxFlex="none">
+                                                    <mat-icon *ngIf="p.requiresReboot" mat-list-icon style="margin-left:8px;color:goldenrod" title="Installation may require a reboot">warning</mat-icon>
+                                                </div>
+                                                <div fxFlex="none" [ngSwitch]="p.state">                                                    
+                                                        <mat-icon *ngSwitchCase="3" mat-list-icon style="color:darkgreen" title="Patch has been downloaded but not installed">file_download</mat-icon>
+                                                        <mat-icon *ngSwitchCase="5" mat-list-icon style="color:darkred" title="Patch installation failed">cancel</mat-icon>
+                                                        <mat-icon *ngSwitchCase="6" mat-list-icon style="color:goldenrod" title="Patch installed, but pending reboot">warning</mat-icon>
+                                                        <mat-icon *ngSwitchDefault mat-list-icon disabled></mat-icon>
+                                                    </div>
+                                                <div fxFlex >
+                                                    <span> {{p.title}} </span>
+                                                </div>
+                                                
+                                            </div>  
+                                        </td>
+                                    </ng-container>
+                                    
+                                    <ng-container matColumnDef="action">
+                                      <th mat-header-cell *matHeaderCellDef>  </th>
+                                      <td mat-cell *matCellDef="let row"> 
+                                        <button mat-button color="accent" *ngIf="!row.unSupportedOS">Apply Patch(es) Now</button>
+                                      </td>
+                                  </ng-container>
+    
+                                  <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+                                  <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                                </table>        
+                                
+                            </div>
+                        </mat-card-content>
+                        
+                    </mat-card>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+  </div>

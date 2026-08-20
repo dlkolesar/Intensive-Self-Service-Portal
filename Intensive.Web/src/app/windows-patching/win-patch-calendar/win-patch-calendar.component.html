@@ -1,0 +1,41 @@
+<div class="ss-win-patch-calendar mat-elevation-z2">
+	<mat-toolbar color="primary"> 
+		<div fxLayout="row" class="header" fxLayoutAlign="space-around start">
+			<div fxFlex="none" class="icon-left">
+				<mat-icon   (click)="previous()">chevron_left</mat-icon>
+			</div>
+			<div fxFlex="grow" class="title">
+				<span class="title">{{patchTue.format("MMMM, YYYY")}}</span>
+			</div>
+			<div fxFlex="none" class="icon-right">
+				<mat-icon    (click)="next()">chevron_right</mat-icon>
+			</div>
+		</div>
+	</mat-toolbar>
+
+	<div class="week names">
+		<span class="day">Sun</span>
+		<span class="day">Mon</span>
+		<span class="day">Tue</span>
+		<span class="day">Wed</span>
+		<span class="day">Thu</span>
+		<span class="day">Fri</span>
+		<span class="day">Sat</span>
+	</div>
+	<div class="week" *ngFor="let week of weeks" 
+			[style.background-color]="week.bg"
+			[style.color]="week.color">
+		<span *ngFor="let d of week.days" 
+					class="day" 
+					[style.background-color]="d.bg"
+					[style.color]="d.color"
+					[ngClass]="{ today: d.isToday, 
+							'different-month': !d.isCurrentMonth, 
+							'selected': d.selected,
+							'patch-tuesday': d.date.isSame(patchTue)
+							}"
+					(click)="select(d)">
+					{{d.number}}
+		</span>
+	</div>
+</div>

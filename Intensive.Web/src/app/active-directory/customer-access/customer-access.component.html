@@ -1,0 +1,111 @@
+
+
+
+
+
+
+<form #accessForm="ngForm" novalidate class="full-width" *ngIf="showForm" >
+  <div fxLayout="row" fxLayoutAlign="left start" fxLayoutGap="10px"  
+      [style.height.px]="componentHeight" style="width:75%;padding-top:40px;margin-left:auto;margin-right:auto">
+    <div fxFlex="30%">
+      <ss-ad-user-select [ldapFilter]="filter"
+                          selectedUser=""
+                          (selectionChange)="UserSelected($event)"
+                          (afterLoaded)="UserListLoaded($event)">
+      </ss-ad-user-select>
+    </div>
+    <div fxFlex >
+      <mat-card >
+          <mat-card-title>Customer Access Manager</mat-card-title>
+          <label *ngIf="user==null"><=== Select a user account from the list</label>
+          <mat-card-content *ngIf="user!=null"> 
+              <div fxLayout.gt-md="row" fxLayout.lt-lg="column"
+                  fxLayoutAlign="left start" 
+                  fxLayoutGap="24px" class="full-width">
+                  <div fxFlex="grow">
+                      <mat-card>
+                        <mat-card-content>
+                          <div *ngIf="!user.enabled" class="color-warn" >
+                              <label  class="color-warn">Account is currently DISABLED</label>
+                              <button mat-button color="accent"
+                                   (click)="routeTo(['/', 'ad','passwordmanager'], {queryParams: {userid:user.userId}})">
+                                   Reset it using Password Manager
+                              </button>
+                          </div>
+                          <div *ngIf="user.enabled && user.lockedOut" >
+                              <label  class="color-warn">Account is currently LOCKED OUT</label>
+                              <button mat-button color="accent"
+                                   (click)="routeTo(['/', 'ad','passwordmanager'], {queryParams: {userid:user.userId}})">
+                                   Unlock it using Password Manager
+                              </button>
+                          </div>
+                          <div *ngIf="user.enabled && isExpired(user)" >
+                              <label  class="color-warn">Account is currently EXPIRED</label>
+                              <button mat-button color="accent"
+                                   (click)="routeTo(['/', 'ad','passwordmanager'], {queryParams: {userid:user.userId}})">
+                                   Reset it using Password Manager
+                              </button>
+                          </div>
+                          <mat-form-field style="width:425px">
+                            <textarea matInput type="number" name="acct" 
+                                  [(ngModel)]="accountNumbers"
+                                  placeholder="Account number(s)" 
+                                  [disabled]="!user.enabled || isExpired(user) || user.lockedOut"
+                                  cdkTextareaAutosize
+                                  cdkAutosizeMinRows="1"
+                                  cdkAutosizeMaxRows="5"></textarea>
+                            <mat-hint>comma separated or on separate lines</mat-hint>
+                          </mat-form-field>
+                          <mat-card style="margin-top:16px">
+                            <mat-card-content>
+                              <p><em>{{user.principalName}} has access to the following accounts:</em></p>
+                                <mat-selection-list (selectionChange)="SelectionChange($event)">
+                                    <mat-list-option *ngFor="let k of keys" [value]="k" checkboxPosition="before">
+                                        <p matLine>
+                                          <strong>{{ k }} </strong>
+                                        </p>
+                                        <p matLine>
+                                          <span>Expires {{ adCustAccess[k] | date:'short' }} </span>
+                                        </p>
+                                    </mat-list-option>
+                                  </mat-selection-list>
+                            </mat-card-content>
+                          </mat-card>
+                        </mat-card-content>
+                      </mat-card>
+                  </div>
+                  <div fxFlex="none">
+                      <div>
+                        <button mat-raised-button color="primary"   
+                                  class="full-width"
+                                  [disabled]="grantDisabled"
+                                  (click)="GrantAccess()">
+                            Grant access to account(s)
+                        </button><br>
+                        <br>
+                        <button mat-button color="accent" class="full-width"
+                                [disabled]="renewDisabled || selectedAccounts==''"
+                                (click)="RenewAccess()">
+                            Renew access to account(s) 
+                        </button><br>
+                        
+                        <button mat-button color="accent"  
+                                      [disabled]="revokeDisabled || selectedAccounts==''"
+                                      (click)="RevokeAccess()">
+                            Revoke access to account(s)
+                        </button>
+                      </div>
+                  </div>
+              </div>
+          </mat-card-content>
+      </mat-card>
+      
+    </div>
+  </div>
+</form>
+  
+  
+
+
+
+  

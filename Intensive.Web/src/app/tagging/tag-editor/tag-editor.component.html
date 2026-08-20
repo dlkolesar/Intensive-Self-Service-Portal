@@ -1,0 +1,64 @@
+
+<form #configForm="ngForm" novalidate class="full-width" *ngIf="showForm">
+    <mat-card class="app-tag-editor">
+        <mat-card-title>Edit Tags</mat-card-title>
+        <mat-card-content> 
+            <div fxLayout.gt-md="row" fxLayout.lt-lg="column"
+                fxLayoutAlign="left start" 
+                fxLayoutGap="24px" class="full-width">
+                <div fxFlex="grow">
+                    <mat-card>
+                        <div fxLayout.gt-md="row" fxLayout.lt-lg="column"
+                        fxLayoutAlign="left start" 
+                        fxLayoutGap="24px" class="full-width">
+                            <div fxFlex="50">
+                                <strong>Private Account Tags</strong>
+                                <div class="tag-list scrollable border-primary"
+                                        [style.height.px]="tagListHeight">
+                                    <mat-chip-list ariaOrientation="vertical">
+                                        <mat-chip style="width:200px" *ngFor="let t of privateTags"
+                                                    removable="true"
+                                                    (removed)="removePrivateChip(t)"
+                                                    [value]="t.id">
+                                            {{t.tagName}}
+                                            <mat-icon matChipRemove style="color:darkred">clear</mat-icon>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                            </div>
+                            <div fxFlex="50">
+                                    <em>
+                                        <p></p>
+                                        <p>Click on the red X of any tag in the list to remove it</p>
+                                        <p></p>
+                                        <p>or enter a new one below</p>
+                                    </em>
+                                    <mat-form-field>
+                                        <input matInput type="text"  name="tagname" 
+                                                [(ngModel)]="tagname"
+                                                placeholder="new tag"
+                                                required>
+                                    </mat-form-field>
+                                    &nbsp;
+                                    <button type="submit"
+                                            mat-raised-button 
+                                            (click)="createNewTag()"
+                                            color="primary" >
+                                            Create new tag
+                                    </button>
+                            </div>
+                        </div>
+                    </mat-card>
+                </div>
+
+
+
+                <div fxFlex="none">
+                   
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+</form>
+    

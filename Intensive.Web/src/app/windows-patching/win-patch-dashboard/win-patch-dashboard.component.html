@@ -1,0 +1,112 @@
+
+
+<div fxLayout="row" fxLayoutAlign="left start" class="ss-win-patch-dashboard">
+  <div fxFlex="grow">
+    <mat-card>
+      <mat-card-title>
+          <h3>Patching Dashboard</h3>
+      </mat-card-title>
+      <mat-card-content>
+        <div style="margin:auto;width:100%;" >
+          <!--<div *ngIf="newAccount"> 
+            <form #configForm="ngForm" (ngSubmit)="onSubmit()" style="width:100%">
+                <label>This account has never been opted into Patching Configuration Management</label><br>
+                <label>CORE Ticket: </label>
+                <mat-input-container>
+                    <input matInput required  type="text" pattern="[0-9]{6}\-[0-9]{5}" >
+                </mat-input-container>
+                <button type="submit" mat-raised-button color="primary" >Opt In</button>
+            </form>
+          </div> -->
+              
+          <div *ngIf="patchingAccount"> 
+            <label *ngIf="!patchingAccount.optedOut">Account Opted IN on </label>
+            <label *ngIf="patchingAccount.optedOut">Account Opted OUT on </label>
+            <span><strong>{{patchingAccount.optInOutDate | date:'short'}} UTC</strong></span>
+            <label> via CORE Ticket: </label>
+            <span>
+                <strong><a href="https://core.rackspace.com/ticket/{{patchingAccount.optInOutTicket}}" target="_blank">{{patchingAccount.optInOutTicket}}</a></strong>
+            </span>
+            
+            <br>
+            <br>
+          </div>
+          <mat-card>
+            <mat-card-content>
+              <div class="full-width" style="display:inline-block">
+                <button mat-button color="accent"
+                    style="float:right"
+                    (click)="exportCSV('PatchingDashboard-' + patchingAccount.number +'.csv')">
+                        Export to CSV
+                </button>
+              </div>
+              <div [style.height.px]="contentHeight - 265" style="overflow:auto">
+                  <table mat-table #table [dataSource]="ds" matSort>  
+                    <ng-container matColumnDef="name">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Server Name </th >
+                      <td mat-cell  *matCellDef="let row">
+                        <mat-icon style="cursor:pointer"
+                                title="Edit configuration" 
+                                mat-list-icon
+                                (click)="EditConfig(row.deviceNumber)"
+                                >
+                            edit
+                        </mat-icon>
+                          &nbsp;&nbsp;
+                        <mat-icon [style.color] = "row.statusIconColor"
+                            style="cursor:default"
+                            [attr.title]="row.statusMessage" 
+                            mat-list-icon>
+                            {{row.statusIcon}}
+                        </mat-icon>
+                        <span>{{row.name}}</span>
+                      </td >
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="dataCenter">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> DC </th >
+                      <td mat-cell  *matCellDef="let row"> {{row.dataCenter}} </td >
+                    </ng-container>
+
+                    <ng-container matColumnDef="patchingLevel">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Patching Level </th >
+                      <td mat-cell  *matCellDef="let row"> 
+                          {{row.patchingLevel}}
+                      </td >
+                    </ng-container>
+
+                    <ng-container matColumnDef="lastContact">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Contact </th >
+                      <td mat-cell  *matCellDef="let row"> {{(row.lastContact==null) ?  "" : (row.lastContact | date: 'short') + ' (UTC)'}} </td >
+                    </ng-container>
+
+                    <ng-container matColumnDef="lastPatchDate">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Patch Date </th >
+                      <td mat-cell  *matCellDef="let row"> {{(row.lastPatchDate==null) ?  "" : (row.lastPatchDate | date: 'short') + ' (UTC)'}} </td >
+                    </ng-container>
+
+                    <ng-container matColumnDef="nextPatchDate">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Next Patch Date </th >
+                      <td mat-cell  *matCellDef="let row"> {{row.nextPatchDate | date: 'short'}} </td >
+                    </ng-container>
+
+                    <ng-container matColumnDef="errors">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Errors </th >
+                      <td mat-cell  *matCellDef="let row"> 
+                        <p *ngFor="let e of row.errors">
+                            - {{e}}
+                        </p>
+                      </td >
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                  </table>        
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

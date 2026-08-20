@@ -1,0 +1,17 @@
+{
+        "type": "object",
+        "description": "Contains a list of resource URL's that match the given criteria",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "the number of URL's in the list of resources"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "URL of a resource that matches the query parameters provided"
+            }
+          }
+        }
+      }

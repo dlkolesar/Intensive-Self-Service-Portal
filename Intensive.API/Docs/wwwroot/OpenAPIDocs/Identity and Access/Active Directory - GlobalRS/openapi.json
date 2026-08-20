@@ -1,0 +1,1564 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Active Directory API - GlobalRS",
+    "version": "v1",
+    "description": "The GlobalRS Active Directory API provides controlled, limited access to certain functions within the  Active Directory domain. \n\nAll API calls are \"scoped\" to the account's OU\n",
+    "contact": {
+      "name": "Rackspace Segment Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.selfservice.intensive.int/ad/v1",
+      "description": "Production"
+    },
+    {
+      "url": "https://test.api.selfservice.intensive.int/ad/v1",
+      "description": "Staging/Test"
+    },
+    {
+      "url": "https://beta.api.selfservice.intensive.int/ad/v1",
+      "description": "Beta"
+    }
+  ],
+  "paths": {
+    "/domains/globalrs/accounts/": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Create account OU",
+        "description": "Creates an OU for the account number and initializes the OU with standard objects and permissions.\n\nThe following actions are performed\n  - Create the Account OU\n  - Remove default permissions for EVERYONE and AUTHENTICATED_USERS\n  - Create **Customer Objects** sub-OU\n  - Create **<_account_>-AllUsers** group\n  - Create **<_account_>-Admins** group\n  - Create **<_account_>-Rax** group\n  - Create **<_account_>-Clusters** group\n  - Add **<_account_>-Admins** to the **<_account_>-AllUsers** group\n  - Add **<_account_>-Rax** to the **<_account_>-AllUsers** group\n  - Add **<_account_>-Clusters** to the **<_account_>-AllUsers** group\n  - Grant READ on account OU to **<_account_>-AllUsers**\n  - Grant CREATE COMPUTER on account OU to **<_account_>-Clusters**\n  - Grant READ/WRITE _ServicePrincipalName_ property on account OU to **<_account_>-Clusters**\n  \n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "integer",
+                "description": "a valid CORE account number",
+                "example": 5709838
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Get Account OU Structure",
+        "description": "Returns an **adContainer** object for the OU and all its descendant objects and containers/OUs.\n\nThe _path_ querystring parameter can be used to indicate the _root_ of the search, i.e., where in the OU structure the search should begin.  If the _path_ querystring parameter is present, it must be a DN to an existing OU(within the account OU structure).  Only objects in this OU and its descendants will be returned.  If _path_ is not provided, the account OU will be used as the search root.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adContainer object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adContainer"
+                },
+                "example": {
+                  "dn": "OU=5709838,OU=RAX,DC=Globalrs,DC=rack,DC=space",
+                  "name": "5709838",
+                  "displayName": "5709838",
+                  "classList": [
+                    "top",
+                    "organizationalUnit"
+                  ],
+                  "principalName": "",
+                  "domainName": "globalrs",
+                  "isContainer": true,
+                  "isUser": false,
+                  "isGroup": false,
+                  "isComputer": false,
+                  "isForeignSecurityPrincipal": false,
+                  "isHidden": false,
+                  "attributes": {},
+                  "childObjects": [
+                    {
+                      "dn": "CN=5709838-Admins,OU=5709838,OU=RAX,DC=Globalrs,DC=rack,DC=space",
+                      "name": "5709838-Admins",
+                      "displayName": "5709838-Admins",
+                      "classList": [
+                        "top",
+                        "group"
+                      ],
+                      "principalName": "GLOBALRS\\5709838-Admins",
+                      "domainName": "globalrs",
+                      "isContainer": false,
+                      "isUser": false,
+                      "isGroup": true,
+                      "isComputer": false,
+                      "isForeignSecurityPrincipal": false,
+                      "isHidden": false,
+                      "attributes": {}
+                    },
+                    {
+                      "dn": "CN=5709838-AllUsers,OU=5709838,OU=RAX,DC=Globalrs,DC=rack,DC=space",
+                      "name": "5709838-AllUsers",
+                      "displayName": "5709838-AllUsers",
+                      "classList": [
+                        "top",
+                        "group"
+                      ],
+                      "principalName": "GLOBALRS\\5709838-AllUsers",
+                      "domainName": "globalrs",
+                      "isContainer": false,
+                      "isUser": false,
+                      "isGroup": true,
+                      "isComputer": false,
+                      "isForeignSecurityPrincipal": false,
+                      "isHidden": false,
+                      "attributes": {}
+                    },
+                    {
+                      "dn": "CN=5709838-Clusters,OU=5709838,OU=RAX,DC=Globalrs,DC=rack,DC=space",
+                      "name": "5709838-Clusters",
+                      "displayName": "5709838-Clusters",
+                      "classList": [
+                        "top",
+                        "group"
+                      ],
+                      "principalName": "GLOBALRS\\5709838-Clusters",
+                      "domainName": "globalrs",
+                      "isContainer": false,
+                      "isUser": false,
+                      "isGroup": true,
+                      "isComputer": false,
+                      "isForeignSecurityPrincipal": false,
+                      "isHidden": false,
+                      "attributes": {}
+                    },
+                    {
+                      "dn": "CN=5709838-RAX,OU=5709838,OU=RAX,DC=Globalrs,DC=rack,DC=space",
+                      "name": "5709838-RAX",
+                      "displayName": "5709838-RAX",
+                      "classList": [
+                        "top",
+                        "group"
+                      ],
+                      "principalName": "GLOBALRS\\5709838-RAX",
+                      "domainName": "globalrs",
+                      "isContainer": false,
+                      "isUser": false,
+                      "isGroup": true,
+                      "isComputer": false,
+                      "isForeignSecurityPrincipal": false,
+                      "isHidden": false,
+                      "attributes": {}
+                    },
+                    {
+                      "childObjects": [],
+                      "dn": "OU=Customer Objects,OU=5709838,OU=RAX,DC=Globalrs,DC=rack,DC=space",
+                      "name": "Customer Objects",
+                      "displayName": "Customer Objects",
+                      "classList": [
+                        "top",
+                        "organizationalUnit"
+                      ],
+                      "principalName": "",
+                      "domainName": "globalrs",
+                      "isContainer": true,
+                      "isUser": false,
+                      "isGroup": false,
+                      "isComputer": false,
+                      "isForeignSecurityPrincipal": false,
+                      "isHidden": false,
+                      "attributes": {}
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Create OU within an account OU",
+        "description": "Creates a new OU within the account OU structure. \n\nIf the _path_ querystring parameter is present, it must be a DN to an existing OU(within the account OU structure) that will be the _parent_ of the new OU, otherwise the new OU will be created within the account OU itself.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "description": "name of the new OU to create, in quotes",
+                "example": "MyNewOUName"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/computers": {
+      "get": {
+        "tags": [
+          "Computers"
+        ],
+        "summary": "Find Computers",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria.\n\nThe _path_ querystring parameter can be used to indicate the _root_ of the search, i.e., where in the OU structure the search should begin.  If the _path_ querystring parameter is present, it must be a DN to an existing OU(within the account OU structure).  Only computers in this OU and its descendants will be returned.  If _path_ is not provided, the account OU will be used as the search root.\n\nThe _filter_ querystring parameter can be used to limit the results to computers that match specific LDAP attributes.   if _filter_ is empty or missing, then ALL computers in the search root(and descendant OUs) will be returned.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 46,
+                  "resources": [
+                    "https://test.api.selfservice.intensive.int/ad/v1/domains/globalrs/accounts/3200416/computers/756377-APP1",
+                    "https://test.api.selfservice.intensive.int/ad/v1/domains/globalrs/accounts/3200416/computers/828836-UATMW1",
+                    "https://test.api.selfservice.intensive.int/ad/v1/domains/globalrs/accounts/3200416/computers/756381-APP2",
+                    "https://test.api.selfservice.intensive.int/ad/v1/domains/globalrs/accounts/3200416/computers/828835-DEVMW1",
+                    "     :                                                                                                   ",
+                    "     :                                                                                                   ",
+                    "     :                                                                                                   ",
+                    "https://test.api.selfservice.intensive.int/ad/v1/domains/globalrs/accounts/3200416/computers/876579-UATDB2",
+                    "https://test.api.selfservice.intensive.int/ad/v1/domains/globalrs/accounts/3200416/computers/875663-UATDB1",
+                    "https://test.api.selfservice.intensive.int/ad/v1/domains/globalrs/accounts/3200416/computers/767496-NFS01"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Computers"
+        ],
+        "summary": "Create Computer object(s)",
+        "description": "Creates a new computer account.  If the computer object already exists in the Computers container, the object will be moved into the account OU.  Otherwise, the object will be created directly in the OU.\n\nIf the CORE device number passed in to the API is a cluster device, then the API will create **ALL** computer objects associated with the cluster, including other cluster devices, such as the NTClus, MSDTC, etc, as well as the physical nodes the cluster is running on. \n\n\nNote that the newly created account is automatically added to the **<_account_>-AllUsers** group, unless it is a cluster, in which case each cluster object is added to the **<_account_>-Clusters** group.\n\nThis API can be called multiple times to create any missing cluster-related computer object(s)\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "integer",
+                "description": "a valid CORE device number",
+                "example": 384864
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/computers/{name}": {
+      "get": {
+        "tags": [
+          "Computers"
+        ],
+        "summary": "Get Computer",
+        "description": "Returns an **adComputer** object.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adComputer object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adComputer"
+                },
+                "example": {
+                  "enabled": true,
+                  "dn": "CN=973727-DFWSESP2,OU=Visual-FX,OU=847885,OU=RAX,DC=Globalrs,DC=rack,DC=space",
+                  "name": "973727-DFWSESP2",
+                  "displayName": "973727-DFWSESP2",
+                  "classList": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user",
+                    "computer"
+                  ],
+                  "principalName": "GLOBALRS\\973727-DFWSESP2$",
+                  "domainName": "globalrs",
+                  "isContainer": false,
+                  "isUser": false,
+                  "isGroup": false,
+                  "isComputer": true,
+                  "isForeignSecurityPrincipal": false,
+                  "isHidden": false,
+                  "attributes": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Computers"
+        ],
+        "summary": "Delete Computer",
+        "description": "Deletes a computer object from the account OU\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/deviceName"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Find Users",
+        "description": "Returns an **apiCollection** of users URL's that match the given criteria.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 29,
+                  "resources": [
+                    "https://api.selfservice.intensve.int/ad/v1/domains/intensive/users/dan.kolesar",
+                    "https://api.selfservice.intensve.int/ad/v1/domains/intensive/users/dan1668",
+                    "https://api.selfservice.intensve.int/ad/v1/domains/intensive/users/Dan5673.cust",
+                    "https://api.selfservice.intensve.int/ad/v1/domains/intensive/users/Dan9386.cust",
+                    "      :                                                                  ",
+                    "      :                                                                  ",
+                    "      :                                                                  ",
+                    "https://api.selfservice.intensve.int/ad/v1/domains/intensive/users/4725835-dan.coffey",
+                    "https://api.selfservice.intensve.int/ad/v1/domains/intensive/users/834705-danadmin",
+                    "https://api.selfservice.intensve.int/ad/v/domains/intensive/users/834705-danuser"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create User account",
+        "description": "Create a user account.  Note that the newly created account is automatically added to the **<_account_>-AllUsers** group\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/adNewUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/sqlserviceaccounts": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create SQL Service accounts",
+        "description": "Creates SQL Server service accounts to run various SQL services. All service accounts created will end with a numerical sequence number, which is associated with a particular SQL Server instance.\n\nThe following actions are performed\n  - Create **<_account_>-SQLSVC#** service account\n  - Create **<_account_>-AGTSVC#** service account\n  - [_Optional_] Create **<_account_>-RPTSVC#** service account\n  - [_Optional_] Create **<_account_>-ANLVC#** service account\n  - [_Optional_] Create **<_account_>-INTSVC#** service account\n  - Create **<_account_>-SvcGroup#** group\n  - Add all service accounts created to the **<_account_>-SvcGroup#** group\n  - Add ***<_account_>-SvcGroup#** to the **<_account_>-AllUsers** group\n  - Grant READ on **<_account_>-AllUsers** group to **<_account_>-SvcGroup#**\n  - Grant FULLCONTROL on **<_account_>-SvcGroup#** to **<_account_>-SQLSVC#** service account\n  \nThe # in the above list refers to a unique sequence number.  The highest numbered **<_account_>-SQLSVC#** that currently exists in the Account OU determines what the next sequence number will be when this API is called to create new service accounts.\n\nif the **sequenceNumber** query parameter is given, the Service Accounts will be generated with that sequence number, instead of calculating the next sequence from the highest numbered **<_account_>-SQLSVC#** that currently exists.  Setting the **sequenceNumber**, will allow the API to be run(or re-run) multiple times to create any missing or new service accounts.\n\nAs an example, suppose a customer builds a SQL cluster with just the DB Engine; no Reporting, Analysis, or Integtration Services.  The API will be called with the following data\n\n    POST /domains/globalrs/accounts/{account}/sqlserviceaccounts\n      {\n          \"instanceName\": \"MSSQL\",\n          \"createBackupAccount\": false,\n          \"reportingServices\": false,\n          \"analysisServices\": false,\n          \"integrationServices\": false\n      }\n  which will create the SQLSVC1 and AGTSVC1 service accounts and place them into the SvcGroup1 group.  Later the custer decides to add Reporting and Analysis Services to their SQL instance. The API can be called again with the **sequenceNumber** set to 1\n  \n    POST /domains/globalrs/accounts/{account}/sqlserviceaccounts?sequenceNumber=1\n      {\n          \"instanceName\": \"MSSQL\",\n          \"createBackupAccount\": false,\n          \"reportingServices\": true,  <==== NOTE\n          \"analysisServices\": true,   <==== NOTE\n          \"integrationServices\": false\n      }\n      \n  The API will then create the RPTSVC1 and ANLSVC1 service accounts and place them into the SvcGroup1 group\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          },
+          {
+            "$ref": "#/components/parameters/svcAcctSeqNumber"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/adNewSQLServiceAccounts"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/users/{userid}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get User",
+        "description": "Returns an AdUser object with data about the given user.  \n\nNote that if you specify any attributes to retrieve, the value in each attribute is presented as it exists in AD; the value is not parsed, translated nor formatted.\n\nFor example, the **accountexpires** attributes is presented as a very large number, like 132010588092732488.  This is actually Microsoft's FILETIME format(see *https://docs.microsoft.com/en-us/windows/desktop/api/minwinbase/ns-minwinbase-filetime*).\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/userid"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPAttributes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adUser",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adUser"
+                },
+                "example": {
+                  "userId": "joe.racker",
+                  "firstName": "Joe",
+                  "lastName": "Racker",
+                  "enabled": true,
+                  "lockedOut": false,
+                  "dn": "CN=Joe Racker,OU=Intensive-Accounts,OU=Rackspace-Support,OU=Support,DC=intensive,DC=int",
+                  "name": "Joe Racker",
+                  "displayName": "Joe Racker",
+                  "classList": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                  ],
+                  "principalName": "INTENSIVE\\joe.racker",
+                  "domainName": "intensive",
+                  "isContainer": false,
+                  "isUser": true,
+                  "isGroup": false,
+                  "isComputer": false,
+                  "isForeignSecurityPrincipal": false,
+                  "attributes": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update User",
+        "description": "Adds an object to a group.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/userid"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/adUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete User",
+        "description": "Deletes a user object from the account OU\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/userid"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/groups": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Find Groups",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria.\n",
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPFilter"
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Create Group",
+        "description": "Creates a new AD group in the Account OU.  Only Security Groups can be created via this API -- Distribution Groups are not supported.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/adNewGroup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/groups/{groupid}": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Get Group",
+        "description": "Returns an **adGroup** object",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/groupid"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPAttributes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adGroup",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adGroup"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Delete Group",
+        "description": "Deletes a group object from the account OU\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/groupid"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/groups/{groupid}/members": {
+      "get": {
+        "tags": [
+          "Group Membership"
+        ],
+        "summary": "Get Group Members",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria. \n\nSince Active Directory only stores the Distinguished Name(DN) of each member, the only way to determine if the member is a user, computer, or another group, is to retrieve that object using the DN. For very large groups, this means extremely long execution times.  \n\nFor that reason, this API returns the member DN in the form of links to the  **/domains/{domainName}/objects/{PathDN}** API endpoint.  It is left to the caller to determine if the objects API should be called to collect more data on the member.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/groupid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "apiCollection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Group Membership"
+        ],
+        "summary": "Add Member",
+        "description": "Adds an object to a group.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/groupid"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "description": "The DistinguishedName(DN) of the object to be added to the group.\nNote that the DN must be enclosed in quotes, either single(') or double(\") will work\n"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains/globalrs/accounts/{account}/groups/{groupid}/members/{dn}": {
+      "delete": {
+        "tags": [
+          "Group Membership"
+        ],
+        "summary": "Remove Member",
+        "description": "Removes an object from a group\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/groupid"
+          },
+          {
+            "$ref": "#/components/parameters/DNPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ]
+      }
+    },
+    "/domains//globalrs/accounts/{account}/objects": {
+      "get": {
+        "tags": [
+          "Objects"
+        ],
+        "summary": "Find Objects",
+        "description": "Returns an **apiCollection** of resource URL's that match the given criteria.\n",
+        "responses": {
+          "200": {
+            "description": "ApiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPFilter"
+          },
+          {
+            "$ref": "#/components/parameters/OUPath"
+          }
+        ]
+      }
+    },
+    "/domains//globalrs/accounts/{account}/objects/{dn}": {
+      "get": {
+        "tags": [
+          "Objects"
+        ],
+        "summary": "Get Object",
+        "description": "Returns a generic **adObject** object",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/account"
+          },
+          {
+            "$ref": "#/components/parameters/DNPath"
+          },
+          {
+            "$ref": "#/components/parameters/LDAPAttributes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "adObject",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adGroup"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/500"
+          },
+          "404": {
+            "$ref": "#/components/responses/500"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "apiCollection": {
+        "$ref": "../../Includes/apiCollection.json"
+      },
+      "apiError": {
+        "$ref": "../../Includes/apiError.json"
+      },
+      "adObject": {
+        "type": "object",
+        "properties": {
+          "dn": {
+            "description": "the DistinguishedName of the AD Object(User, Group, OU, etc).",
+            "type": "string"
+          },
+          "name": {
+            "description": "the internal name of the AD object",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "the display name for the AD object",
+            "type": "string"
+          },
+          "classList": {
+            "description": "a list of AD classes this object is based on",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "AD class name"
+            }
+          },
+          "domainName": {
+            "type": "string",
+            "readOnly": true,
+            "description": "the netBIOS domain name that this object is a member of"
+          },
+          "attributes": {
+            "type": "object",
+            "description": "a dictionary (or associative array) of LDAP attribute names and their corresponding values."
+          },
+          "isContainer": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a container or an OU, which may contain other objects"
+          },
+          "isUser": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a user object"
+          },
+          "isGroup": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a group object"
+          },
+          "isComputer": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates where this object is a computer object"
+          },
+          "isForeignSecurityPrincipal": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "indicates whether this object is a foreign security principal that exists in another domain or forest"
+          }
+        }
+      },
+      "adDomain": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "fqdn": {
+                "description": "the FQDN of the domain",
+                "type": "string"
+              },
+              "sites": {
+                "description": "an array of valid site names within the domain.\nA site name can be used on some endpoints to force a change to occur in that site before replicating out to other sites\n",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "adUser": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "userid": {
+                "description": "the unique userid of the user; comes from the LDAP *sAMAccountName* attribute",
+                "type": "string"
+              },
+              "firstName": {
+                "description": "the user's first name(given name); comes from the LDAP *givenName* attribute",
+                "type": "string"
+              },
+              "lastName": {
+                "description": "the user's last name(surname); comes from the LDAP *sn* attribute",
+                "type": "string"
+              },
+              "enabled": {
+                "description": "indicates if the account is enabled or not",
+                "type": "boolean"
+              },
+              "lockedOut": {
+                "description": "TRUE if the account is locked out; Note that the **LockedOut** property cannot be programtically set to TRUE; it can only be set to FALSE to unlock the account",
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "adNewUserBase": {
+        "properties": {
+          "userid": {
+            "description": "the unique userid of the user",
+            "type": "string"
+          },
+          "firstName": {
+            "description": "the user's first name(given name). Can be blank/empty if **fullName** is provided",
+            "type": "string"
+          },
+          "lastName": {
+            "description": "the user's last name(surname).  Can be blank/empty if **fullName** is provided",
+            "type": "string"
+          },
+          "fullName": {
+            "description": "if empty, this will be automatically populated by concatenating the **firstName** and **lastName**\n",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "indicates if the user should should be enabled or not when it is created.",
+            "type": "boolean"
+          }
+        }
+      },
+      "adNewUser": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adNewUserBase"
+          },
+          {
+            "properties": {
+              "serviceAccount": {
+                "description": "Indicates if the new user account is a service account.\n\nNote that service account generally have a non-expiring password\n",
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "adNewSQLServiceAccounts": {
+        "type": "object",
+        "description": "Parameters to indicate what SQL Server service accounts to create for a particular SQL Server instance\n",
+        "properties": {
+          "instanceName": {
+            "description": "The name of the MS SQL Server Instance\n",
+            "type": "string"
+          },
+          "createBackupAccount": {
+            "description": "if **true**, a service account for performing backups will be created\n",
+            "type": "boolean"
+          },
+          "reportingServices": {
+            "description": "if **true**, a service account will be created for running SQL Reporting Services\n",
+            "type": "boolean"
+          },
+          "analysisServices": {
+            "description": "if **true**, a service account will be created for running SQL Analysis Services\n",
+            "type": "boolean"
+          },
+          "integrationServices": {
+            "description": "if **true**, a service account will be created for running SQL Integration Services\n",
+            "type": "boolean"
+          }
+        }
+      },
+      "adGroup": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "groupType": {
+                "description": "The type of group",
+                "type": "string",
+                "enum": [
+                  "SystemGroup",
+                  "GlobalGroup",
+                  "DomainLocalGroup",
+                  "UniversalGroup",
+                  "AuthManBasicGroup",
+                  "Distribution",
+                  "Security"
+                ]
+              },
+              "isScurityGroup": {
+                "description": "Indicates if this is a security group or not",
+                "readOnly": true,
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "adNewGroup": {
+        "properties": {
+          "name": {
+            "description": "the unique internal name of the group",
+            "type": "string"
+          },
+          "groupScope": {
+            "description": "The security scope of the new group",
+            "type": "string",
+            "enum": [
+              "Global",
+              "Domain Local",
+              "Universal"
+            ]
+          }
+        }
+      },
+      "adComputer": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "enabled": {
+                "description": "Indicates if this is a computer object is enabled or not",
+                "type": "boolean"
+              },
+              "isScurityGroup": {
+                "description": "Indicates if this is a security group or not",
+                "readOnly": true,
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "adContainer": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adObject"
+          },
+          {
+            "properties": {
+              "childObjects": {
+                "description": "a recursive array of all object within the OU",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/adObject"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "userid": {
+        "name": "userid",
+        "in": "path",
+        "description": "either the sAMAccount name or the DistinguishedName(DN) of the user to retrieve\n",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "groupid": {
+        "name": "groupid",
+        "in": "path",
+        "description": "either the sAMAccount name or the DistinguishedName(DN) of the group \n",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Site": {
+        "name": "site",
+        "in": "query",
+        "description": "AD Site name.  When making a change the API will connect to a Domain Controller in this site to make the change.  The AD replication topology will replicate the change(s) from there.\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "OUPath": {
+        "name": "path",
+        "in": "query",
+        "description": "the DistinguishedName(DN) of the container or OU to be used as the root level for the operation. For GET operations, only the container at <_path_> and its child containers will be searched for matching. objects.  For POST operation, the new object will be created in the container specified by <_path_>.\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "OUPathRequired": {
+        "name": "path",
+        "in": "query",
+        "required": true,
+        "description": "the DistinguishedName(DN) of the container or OU to be used as the root level of the search.  Only the container and its child containers will be searched for matching objects\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "DN": {
+        "name": "dn",
+        "in": "query",
+        "required": true,
+        "description": "the DistinguishedName(DN) of the object to retrieve\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "DNPath": {
+        "name": "dn",
+        "in": "path",
+        "required": true,
+        "description": "the DistinguishedName(DN) of an object \n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "LDAPFilter": {
+        "name": "filter",
+        "in": "query",
+        "required": false,
+        "description": "a valid LDAP filter.  Only objects that match the given filter will be returned.  if not present, links to all objects of the given type(users, gorups, etc) will be returned.\n\nRefer to https://technet.microsoft.com/en-us/library/aa996205%28v=exchg.65%29.aspx?f=255&MSPPError=-2147217396 for help writing LDAP filters\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "LDAPAttributes": {
+        "name": "attributes",
+        "in": "query",
+        "description": "[OPTIONAL] a comma-separated list(with no spaces) of valid LDAP attribute names.\n\nThe values for each attribute will be returned in the \"attributes\" property of the returned object.  if the attribute name does not exist or has no value, its \"attribute\" property in the returned object will be set to NULL\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "account": {
+        "name": "account",
+        "in": "path",
+        "description": "CORE account number",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "deviceName": {
+        "name": "name",
+        "in": "path",
+        "description": "computer name, CORE device number, or DN of a computer object",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "svcAcctSeqNumber": {
+        "name": "sequenceNumber",
+        "in": "query",
+        "description": "the sequence number to use when generating SQL Service account(s) ",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "The requested AD object was created. a link to the newly created object is returned in the headers\n"
+      },
+      "204": {
+        "description": "The request was successful, but no data is returned\n"
+      },
+      "400": {
+        "description": "There was something wrong with the input data either in the body of the request or in the querystring portion of the URL.  The specific error will be returned in the body of the HTTp Response.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "- You do not have the necessary permission(s) to perform this action\n- the Identity token was not provided in the Header\n- the Identity token provided in the header has expired\n"
+      },
+      "404": {
+        "description": "The item you are looking for was not found.\n\nThis could be any of the following\n  - the domain specified in the URL was not found\n  - the account specified in the URL was not found\n  - the AD object(user, group, computer, etc) specified in the URL was not found\n"
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/apiError"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "authTokenRequired": {
+        "name": "X-Auth-Token",
+        "type": "apiKey",
+        "in": "header",
+        "description": "a valid Identity token must be provided in the header of the request"
+      }
+    }
+  }
+}

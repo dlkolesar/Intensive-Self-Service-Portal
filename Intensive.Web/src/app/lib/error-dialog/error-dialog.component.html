@@ -1,0 +1,17 @@
+
+<div mat-dialog class="ss-error-dialog">
+  <h1 mat-dialog-title>
+      <mat-icon [style.color]="iconColor">{{icon}}</mat-icon>
+    {{title}}
+  </h1>
+  <mat-dialog-content>
+    {{message}}<br>
+    <br>
+    <a *ngIf="url.length>0" target="_blank" [href]="url" >
+       More info... 
+    </a>
+  </mat-dialog-content>
+  <mat-dialog-actions class="float-right">
+    <button mat-raised-button  color="primary" mat-dialog-close (click)="close">Close</button>
+  </mat-dialog-actions>
+</div>

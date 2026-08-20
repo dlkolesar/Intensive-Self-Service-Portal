@@ -1,0 +1,1040 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Windows Patching API",
+    "version": "v1",
+    "description": "The Windows Patching API provides access to patching configuration and reporting data"
+  },
+  "servers": [
+    {
+      "url": "https://api.selfservice.intensive.int/winpatch/v1",
+      "description": "Production"
+    },
+    {
+      "url": "https://test.api.selfservice.intensive.int/winpatch/v1",
+      "description": "Staging/Test"
+    },
+    {
+      "url": "https://beta.api.selfservice.intensive.int/winpatch/v1",
+      "description": "Beta"
+    }
+  ],
+  "paths": {
+    "/accounts": {
+      "get": {
+        "summary": "All Opted-In Accounts",
+        "description": "Returns an ApiCollection object with URLS to each Patching Account that has been Opted In",
+        "tags": [
+          "Patching Accounts"
+        ],
+        "responses": {
+          "200": {
+            "description": "apiCollection object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 2535,
+                  "resources": [
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/1224",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/1523",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/1623",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/2000",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/2514",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/2540",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/2542",
+                    "                   :                                      ",
+                    "                   :                                      ",
+                    "                   :                                      ",
+                    "                   :                                      ",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/5060912",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/5074616",
+                    "https://test.api.selfservice.intensve.int/patching/test/accounts/5656928"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/accounts/{accountNumber}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/accountNumber"
+        }
+      ],
+      "get": {
+        "summary": "Get Patching Account",
+        "description": "Returns Account-wide settings related to Windows Patching",
+        "tags": [
+          "Patching Accounts"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "number": 3101,
+                    "optedOut": true,
+                    "optInOutDate": "2018-10-03T20:06:34.423",
+                    "optInOutTicket": "123456-78910",
+                    "optedOutOfTicketing": false,
+                    "lastRefresh": "2018-10-03T07:00:17.567"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "the patching account does not exist in the database"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "summary": "Account OptIn/OptOut",
+        "description": "Used to perform actions on the Account, such as opting in or out",
+        "tags": [
+          "Patching Accounts"
+        ],
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The action completed successfully.  No data is returned  \n"
+          },
+          "304": {
+            "description": "The account is already opted in or out\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "the patching account does not exist in the database"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": true,
+            "description": "the action to be taken on the account\n\n- **optin** - enables management of patch settings for the account.  This merely sets a flag indicating that the account is opted in..  After account opt-in,  it is recommended(but not required) to call **POST /accounts/{_accountnumber_}?action=refresh** to discover any/all eligible patching clients in the account and pull settings for each one.  This will not be done automatically by the opt-in process.\n\n  Accounts that are opted out will not receive monthly patching tickets.\n\n  \n- **optout** - disables management of patch settings for the account\n\n- **refresh** - refreshes the list of servers in the account.  Useful to bring in new servers that have just been brought online.  returns an array of device numbers that were \"discovered\".\n\n  Note that you should Pull Settings for each discovered device via the **POST /clients/{devicenumber}?action=pullsettings** endpoint before making any changes to the newly discovered devices.\n",
+            "schema": {
+              "enum": [
+                "optin",
+                "optout",
+                "refresh"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "ticket",
+            "in": "query",
+            "required": true,
+            "description": "the CORE ticket number, authorizing the account to be Opted IN or OUT\n",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update Patching Account",
+        "description": "Saves the  Patching Account information to the database. If the account  does not already exist, it will be created.  Otherwise, the existing data will be updated.",
+        "tags": [
+          "Patching Accounts"
+        ],
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The action completed successfully.  No data is returned"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "the patching account does not exist in the database"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchingAccount"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/accounts/{accountNumber}/clients": {
+      "get": {
+        "summary": "Get Patching Clients for the given account",
+        "description": "Returns an ApiCollection object with URLS to each Patching Client that belongs to the given account",
+        "tags": [
+          "Patching Accounts",
+          "Patching Clients"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 6,
+                  "resources": [
+                    "https://api.selfservice.intensve.int/winpatch/v1/Clients/595918",
+                    "https://api.selfservice.intensve.int/winpatch/v1/Clients/596044",
+                    "https://api.selfservice.intensve.int/winpatch/v1/Clients/596047",
+                    "https://api.selfservice.intensve.int/winpatch/v1/Clients/596054",
+                    "https://api.selfservice.intensve.int/winpatch/v1/Clients/596085",
+                    "https://api.selfservice.intensve.int/winpatch/v1/Clients/596090"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountNumber"
+          }
+        ]
+      }
+    },
+    "/clients/{deviceNumber}": {
+      "get": {
+        "tags": [
+          "Patching Clients"
+        ],
+        "summary": "Get Patching Client",
+        "description": "Retrieves the common patching configuration data for this server.  A valid Identity token is required in order to fetch Advanced Scheduling data from ARIC\n",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatchingClient",
+                  "example": {
+                    "deviceNumber": 487364,
+                    "name": "487364-E2EWRK12.test.com",
+                    "dataCenter": "LON",
+                    "osVersion": "6.2.9200",
+                    "osMajorVersion": 6,
+                    "osMinorVersion": 2,
+                    "osBuildNumber": 9200,
+                    "unSupportedOS": false,
+                    "wsusid": "7e31cec9-d321-4a31-bc64-611c1ab93f2a",
+                    "targetId": 28316,
+                    "patchingLevel": 3,
+                    "useWUServer": true,
+                    "wuServer": "http://microsoftupdate.lon3.rackspace.com",
+                    "auOptions": 3,
+                    "optedOut": false,
+                    "lastContact": "2018-07-25T23:13:06.367",
+                    "lastPatchDate": "2018-05-15T01:12:09.09",
+                    "nextPatchDate": "2018-08-19T01:00:00",
+                    "rebootPending": false,
+                    "errors": [],
+                    "noAutoRebootWithLoggedOnUsers": false,
+                    "scheduledWeek": 1,
+                    "scheduledDay": 1,
+                    "scheduledTime": 1,
+                    "advancedPatching": {
+                      "id": "00000000-0000-0000-0000-000000000000",
+                      "processName": null,
+                      "arguments": [],
+                      "minute": null,
+                      "hour": null,
+                      "dayOfWeek": null,
+                      "dayOfMonth": null,
+                      "monthOfYear": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "the patching client does not exist in the database"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Patching Clients"
+        ],
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "summary": "Client Actions",
+        "description": "Used to perform actions on the device, such as opting in or out   \n",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": true,
+            "description": "the action to be taken on the device\n\n- **optin** - enables management of patch settings for the device\n- **optout** - disables management of patch settings for the device\n\n  note that a device can also be opted in or out by using the PUT method and setting the \"optedOut\" property to true or false.  These POST actions are provided as a convenience.\n  \n - **pullsettings** - pulls the settings from the client Registry and WSUS and updates the portal database with any new data.\n \n - **patchnow** - Invokes the Advanced Patching script to begin patching immediately\n \n - **defaulttoRS** - sets all Registry keys to Rackspace defaults.  After the job(s) complete, you should call **pullsettings** to update the DB with the new values.\n \n - **resetwsusid** - resets/regenerates a unique GUID to identifiy this client to WSUS.  After the job(s) complete, you should call **pullsettings** to update the DB with the new values.\n \n \n With the exception of **optin** and **optout**, these actions will invoke an external, asynchronous ARIC process.  Once the process has been submitted, the API will return immediately, with a URL in the **Location** header to query the job status, and the initial job info in the body of the response; it does not wait for a response from the ARIC process.\n \n",
+            "schema": {
+              "enum": [
+                "optin",
+                "optout",
+                "pullsettings",
+                "patchnow",
+                "defaulttors",
+                "resetwsusid"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The action successfully started the ARIC process to perform the requested action.  The **Location** header in the response will contain a URL that can be polled to monitor the status of the ARIC process.   \n\nRefer to the XXXXXXXXXXXXXXXX API documentation for additional information.\n"
+          },
+          "204": {
+            "description": "The action completed successfully.  No data is returned  \n"
+          },
+          "304": {
+            "description": "The device is already opted in or out\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "the patching client does not exist in the database"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Patching Clients"
+        ],
+        "summary": "Update Patching Client",
+        "description": "Updates the Patching Client base properties.\n\nNote that the following properties cannot be updated.  If they are present in the input data, their values will be ignored and will not be applied to the database.\n  - deviceNumber\n  - name\n  - osVersion\n  - osMajorVersion\n  - osMinorVersion\n  - osBuildNumber\n  - unsupportedOS\n  - WSUSID\n  - targetId\n  - lastContact\n  - lstPatchDate\n  - nextPatchDate\n  - rebootPending\n  - errors\n  - advanced patching id\n",
+        "security": [
+          {
+            "authTokenRequired": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchingClient"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The action completed successfully.  the Updated Patching Client object is returned\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatchingClient"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "the patching client does not exist in the database"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/deviceNumber"
+        }
+      ]
+    },
+    "/clients/{deviceNumber}/patches": {
+      "get": {
+        "tags": [
+          "Patches"
+        ],
+        "summary": "Find Patches for Client",
+        "description": "Returns an **ApiCollection** object with URLS to each update/patch that is applicable to this client.  The results can be narrowed down by using the querystring parameters.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          },
+          {
+            "$ref": "#/components/parameters/patchFromDate"
+          },
+          {
+            "$ref": "#/components/parameters/patchToDate"
+          },
+          {
+            "$ref": "#/components/parameters/patchIncludeStates"
+          },
+          {
+            "$ref": "#/components/parameters/patchExcludeStates"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                },
+                "example": {
+                  "count": 78,
+                  "resources": [
+                    "https://test.api.selfservice.intensive.int/winpatch/v1/clients/796688/patches/8452bac0-bf53-4fbd-915d-499de08c338b",
+                    "https://test.api.selfservice.intensive.int/winpatch/v1/clients/796688/patches/02b62bb0-33b2-4585-8945-0f0a711b909e",
+                    "https://test.api.selfservice.intensive.int/winpatch/v1/clients/796688/patches/ced67375-e431-4a8b-9245-52386c04f674",
+                    "      :",
+                    "      :",
+                    "      :",
+                    "https://test.api.selfservice.intensive.int/winpatch/v1/clients/796688/patches/a1a00774-b682-4b6d-b5b3-76dcf7f2cd66",
+                    "https://test.api.selfservice.intensive.int/winpatch/v1/clients/796688/patches/a4d880cb-c4d5-4974-b55b-015f5388201f"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/clients/{deviceNumber}/patches/missing": {
+      "get": {
+        "tags": [
+          "Patches"
+        ],
+        "summary": "Get Missing Patches",
+        "description": "Calls the **Find Patches** API with the following values for the _includeStates_ \n - NotInstalled\n - Downloaded\n - Failed\n \n",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/deviceNumber"
+        },
+        {
+          "$ref": "#/components/parameters/patchFromDate"
+        },
+        {
+          "$ref": "#/components/parameters/patchToDate"
+        }
+      ]
+    },
+    "/clients/{deviceNumber}/patches/installed": {
+      "get": {
+        "tags": [
+          "Patches"
+        ],
+        "summary": "Get Installed Patches",
+        "description": "Calls the **Find Patches** API with the following values for the _includeStates_ \n - Installed\n \n",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/deviceNumber"
+        },
+        {
+          "$ref": "#/components/parameters/patchFromDate"
+        },
+        {
+          "$ref": "#/components/parameters/patchToDate"
+        }
+      ]
+    },
+    "/clients/{deviceNumber}/patches/pendingReboot": {
+      "get": {
+        "tags": [
+          "Patches"
+        ],
+        "summary": "Get Patches Pending a Reboot",
+        "description": "Calls the **Find Patches** API with the following values for the _includeStates_ \n - PendingReboot\n \n",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiCollection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/deviceNumber"
+        },
+        {
+          "$ref": "#/components/parameters/patchFromDate"
+        },
+        {
+          "$ref": "#/components/parameters/patchToDate"
+        }
+      ]
+    },
+    "/clients/{deviceNumber}/patches/{patchID}": {
+      "get": {
+        "tags": [
+          "Patches"
+        ],
+        "summary": "Get Patch Data and Status",
+        "description": "returns a **PatchStatuInfo** object descibing the patch and the installation state on this client\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/deviceNumber"
+          },
+          {
+            "$ref": "#/components/parameters/patchID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatchStatusInfo"
+                },
+                "examples": {
+                  "one": {
+                    "value": {
+                      "wsusId": "850052e0-d769-47d6-941e-9634d7fc5d3a",
+                      "state": "Installed",
+                      "stateChangeDate": "2016-06-27T20:47:09.283",
+                      "patchId": "8452bac0-bf53-4fbd-915d-499de08c338b",
+                      "localId": 59695,
+                      "title": "Windows Server 2012 R2 Update (KB2919355)",
+                      "requiresReboot": true,
+                      "severity": "Critical",
+                      "bulletin": "MS14-018",
+                      "kbArticle": "2919355",
+                      "url": "http://support.microsoft.com/kb/2919355",
+                      "releaseDate": "2015-04-07T17:00:00"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "the patching client does not exist in the database or the patch ID does not exist\n"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "apiCollection": {
+        "$ref": "../../Includes/apiCollection.json"
+      },
+      "apiError": {
+        "$ref": "../../Includes/apiError.json"
+      },
+      "PatchingAccount": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "description": "CORE account number",
+            "type": "integer"
+          },
+          "optedOut": {
+            "description": "- **true** the account has been opted out.\n- When changing this value, the **optInOutTicket** property must also be provided\n",
+            "type": "boolean"
+          },
+          "optInOutDate": {
+            "description": "The date and time the account was last Opted In or Out.  This is a read-only field.  If you assign a value to it in a PUT or POST request it will be ignored.\n",
+            "type": "string"
+          },
+          "optInOutTicket": {
+            "description": "The CORE ticket number documenting/requesting the Opt In or Opt Out.\nThis value is required if the **optedOut** property is changed\n",
+            "type": "string"
+          },
+          "optedOutOfTicketing": {
+            "description": "- **true** this customer will NOT receive the patching notification tickets that are generated each month.\n- **false** this customer WILL receive the patching notification tickets\n",
+            "type": "boolean"
+          },
+          "lastRefresh": {
+            "description": "date/time this account had its server list updated in the database\n",
+            "type": "string"
+          }
+        }
+      },
+      "PatchingClient": {
+        "description": "represents a customer server that is managed by the Segment Support Windows patching environment\n",
+        "type": "object",
+        "properties": {
+          "deviceNumber": {
+            "description": "CORE device number for this server\n",
+            "type": "integer"
+          },
+          "name": {
+            "description": "hostname for the server, as it is registered within WSUS\n",
+            "type": "string"
+          },
+          "dataCenter": {
+            "description": "the 3-character datacenter that this server resides in.  \n",
+            "type": "string"
+          },
+          "osVersion": {
+            "description": "The concatenation of the **osMajorVersion**, **osMinorVersion**, and **osBuildNumber**\n",
+            "type": "string",
+            "readOnly": true
+          },
+          "osMajorVersion": {
+            "description": "The Major version of the OS, as determined by WSUS  \n",
+            "type": "integer",
+            "readOnly": true
+          },
+          "osMinorVersion": {
+            "description": "The Minor version of the OS, as determined by WSUS\n",
+            "type": "integer",
+            "readOnly": true
+          },
+          "osBuildNumber": {
+            "description": "The build number of the OS, as determined by WSUS \n",
+            "type": "integer",
+            "readOnly": true
+          },
+          "unSupportedOS": {
+            "description": "true if this version of the OS is unsupported and will not be patched.  \nA config option in the database will hold the minimum supported OS version\n",
+            "type": "boolean",
+            "readOnly": true
+          },
+          "wsusid": {
+            "description": "the GUID used by WSUS\n",
+            "type": "string",
+            "nullable": true
+          },
+          "targetId": {
+            "description": "an identifier used internally by WSUS\n",
+            "type": "number"
+          },
+          "patchingLevel": {
+            "minimum": 0,
+            "maximum": 3,
+            "description": "the level of automated patching for this server.  \n0. No Patching\n1. Basic (Windows Automatic Patching)\n2. Advanced(Run Custom ARIC Processes)\n3. Manual\n",
+            "type": "integer"
+          },
+          "useWUServer": {
+            "description": "(Registry setting) true if the server gets its updates from a WSUS server; false if the updates are Microsoft directly\n",
+            "type": "boolean"
+          },
+          "wuServer": {
+            "description": "(Registry setting)the URL of the WSUS server that updates are downloaded from\n",
+            "type": "string"
+          },
+          "auOptions": {
+            "minimum": 2,
+            "maximum": 5,
+            "description": "(Registry setting) tells Windows Automatic Update client how to download and install updates; refer to the MS documentation for full details - https://msdn.microsoft.com/en-us/library/dd939844(v=ws.10).aspx\n",
+            "type": "integer"
+          },
+          "optedOut": {
+            "description": "true if this server is not to be managed via the Patching Portal.  Used in situations where the customer may have a GPO applied to the server, or have their own WSUS environment and want to manage the patches themselves.\n",
+            "type": "boolean"
+          },
+          "lastContact": {
+            "description": "The date/time(in UTC) that the client last contacted the WSUS server to report status or check for updates.  \n",
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "lastPatchDate": {
+            "description": "The date/time(in UTC) that the client successfully installed its most recent patch.\n",
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "nextPatchDate": {
+            "description": "The date/time(in UTC) that the client is scheduled to install(or just download) the next set of patches.\n",
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "rebootPending": {
+            "description": "**True** if an update has been installed that requires a reboot to take effect\n",
+            "type": "boolean"
+          },
+          "errors": {
+            "description": "An array of error messages.  These messages can indicate invalid data was read from the database, or that the most recent action(such as a PUT) failed\n",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "noAutoRebootWithLoggedOnUsers": {
+            "description": "- **true** = Logged-on user can decide whether to restart the client computer.  \n- **false** = Automatic Updates notifies the user that the computer will restart in 15 minutes. \n",
+            "type": "boolean"
+          },
+          "scheduledWeek": {
+            "minimum": 1,
+            "maximum": 3,
+            "description": "Indicates which week after Patch Tuesday, patches will be made available to this client\n1. Early Release Week\n2. Default Release Week\n3. Delayed Release Week\n",
+            "type": "integer"
+          },
+          "scheduledDay": {
+            "minimum": 0,
+            "maximum": 7,
+            "description": "Indicates which day of the week that patches will be applied.  \n- 0 = Every day. \n- 1 through 7 = the days of the week from Sunday (1) to Saturday (7).\n  \nOnly valid for the clients with the Basic Patching Level\n",
+            "type": "integer"
+          },
+          "scheduledTime": {
+            "minimum": 0,
+            "maximum": 23,
+            "description": "Indicates which hour of the day that patches will be applied in 24-hour format (0 23). 0=midnight, 23=11:00pm.  \nOnly valid for the clients with the Basic Patching Level\n",
+            "type": "integer"
+          },
+          "advancedPatching": {
+            "$ref": "#/components/schemas/PatchingClientAdvancedConfig"
+          }
+        }
+      },
+      "PatchingClientAdvancedConfig": {
+        "description": "contains the configuration data required for Advanced Patching. i.e., When  patchingLevel=2.\n",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "the GUID of the ARIC Timetable entry that schedules the advanced patching process\n",
+            "type": "string"
+          },
+          "processName": {
+            "description": "the name of the ARIC process that will be executed to perform advanced patching\n",
+            "type": "string"
+          },
+          "arguments": {
+            "description": "a JSON object containing the parameters required for the ARIC process\n",
+            "type": "object"
+          },
+          "minute": {
+            "description": "the minute portion of the time when the advanced patching process will be executed.  0-59 or * for every\n",
+            "type": "string"
+          },
+          "hour": {
+            "description": "the hour portion of the time when the advanced patching process will be executed. 0 - 23 or * for every hour\n",
+            "type": "string"
+          },
+          "dayOfWeek": {
+            "description": "the day of the week the advanced patching process will be executed on.\n0=Sunday, 1=Monday,.... or * for every day\n",
+            "type": "string"
+          },
+          "dayOfMonth": {
+            "description": "the date(s) of the month the advanced patching process can be executed on.  Typically, this will be a range of numbers corresponding to to given week number of the month.  \n\nCombines with the **dayOfWeek** property to let you specify the 3rd Thursday of the month, for example, which would have a **dayOfWeek** value of \"3\" and **dayOfMonth** would be \"15-21\"\n\n- 1st week ==> 1-7\n- 2nd week ==> 8-14\n- 3rd week ==> 15-21\n- 4th week ==> 22-28\n- last week ==> 25-31\n",
+            "type": "string"
+          },
+          "monthOfYear": {
+            "description": "the month(s) of the year the advanced patching process can be executed on.  Typically, this will be \"*\" indicating any/every month\n",
+            "type": "string"
+          }
+        }
+      },
+      "PatchInfo": {
+        "properties": {
+          "patchId": {
+            "description": "the WSUS internal Guid for the patch/update",
+            "type": "string",
+            "format": "uuid"
+          },
+          "localId": {
+            "description": "the WSUS internal identifier for the patch/update",
+            "type": "integer"
+          },
+          "title": {
+            "description": "the name or title of the update",
+            "type": "string"
+          },
+          "requiresReboot": {
+            "description": "**true** if installing the patch/update may require a reboot\n",
+            "type": "boolean"
+          },
+          "severity": {
+            "description": "The MS-provided severity level of the update\n",
+            "enum": [
+              "Critical",
+              "Important",
+              "Moderate",
+              "Low",
+              "Unspecified"
+            ],
+            "type": "string"
+          },
+          "bulletin": {
+            "description": "MS Security Bulletin identifier",
+            "type": "string"
+          },
+          "kbArticle": {
+            "description": "KB article number",
+            "type": "string"
+          },
+          "url": {
+            "description": "url link to the MS KB article for the update",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PatchStatusInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PatchInfo"
+          },
+          {
+            "properties": {
+              "state": {
+                "description": "the state of this update on this client\n1. Not Applicable to this client\n2. Needed, but not installed\n3. Downloaded, but not installed\n4. Installed\n5. Installation Failed\n6. Installed, Reboot Pending\n",
+                "minimum": 0,
+                "maximum": 6,
+                "type": "integer"
+              },
+              "changeDate": {
+                "description": "The date when the status last changed\n",
+                "type": "string",
+                "readOnly": true
+              },
+              "targetId": {
+                "description": "The WSUS internal identifier of the computer target that this status info applies to\n",
+                "type": "integer"
+              }
+            }
+          }
+        ],
+        "type": "object"
+      },
+      "PatchingHistory": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "CORE account number",
+            "type": "integer"
+          },
+          "coreTicket": {
+            "description": "The CORE ticket number that was generated\n",
+            "type": "boolean"
+          },
+          "runId": {
+            "description": "composed of the 4 digit year followed by the 2 digit month\n",
+            "type": "string"
+          },
+          "ticketType": {
+            "description": "\"Automatic\" or \"Manual\" depending on which type of patching ticket was generated\n",
+            "type": "string"
+          },
+          "updated": {
+            "description": "- **true** if the ticket has been updated after being generated\n",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "accountNumber": {
+        "name": "accountNumber",
+        "in": "path",
+        "description": "The CORE account number",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "deviceNumber": {
+        "name": "deviceNumber",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "description": "a valid CORE device number.  The deviceNumber must be a positive integer > 0.  If the deviceNumber is zero, negative, or contains any non-numeric characters, a 400(Bad Request) error will be returned\n"
+      },
+      "patchID": {
+        "name": "patchID",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": "The GUID of the patch/update in the WSUS database.\n"
+      },
+      "patchFromDate": {
+        "name": "from",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "full-date"
+        },
+        "description": "[OPTIONAL] Starting date to search for matching patches.  only patches released on or after this date will be returned. A time component is not required and if present will be ignored.  If omitted, defaults to a minimum value, which will result in ALL matching patches up to the __to__ date.  This can produce a very large number patches and may cause the API to run for a long time.\n"
+      },
+      "patchToDate": {
+        "name": "to",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "full-date"
+        },
+        "description": "[OPTIONAL] Ending date to search for matching patches.  only patches released on or before this date will be returned. A time component is not required and if present will be ignored. If omitted, defaults to the current date.\n"
+      },
+      "patchIncludeStates": {
+        "name": "includeStates",
+        "in": "query",
+        "description": "[OPTIONAL] one or more of the following installation states, separated by commas.  Returns patches that have any of the given installation states.  if not present, defaults to **All**\n",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "All",
+            "NotInstalled",
+            "Downloaded",
+            "Installed",
+            "Failed",
+            "PendingReboot"
+          ]
+        }
+      },
+      "patchExcludeStates": {
+        "name": "excludeStates",
+        "in": "query",
+        "description": "[OPTIONAL] one or more of the following installation states, separated by commas,  **Excludes** patches that have any of the given installation states.  Especially useful when combined with _includeStates_ = **All**.  If not present, **NONE** is the default.\n",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "None",
+            "NotInstalled",
+            "Downloaded",
+            "Installed",
+            "Failed",
+            "PendingReboot"
+          ]
+        }
+      }
+    },
+    "responses": {
+      "204": {
+        "description": "The request completed successfully, but no data is returned.\n"
+      },
+      "400": {
+        "description": "Bad Request -- The data presented in the querystring or in the body of the request was invalid.  A text message will usually accompany this error, indicating what is wrong with the data presented."
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/apiError"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "authTokenRequired": {
+        "name": "X-Auth-Token",
+        "type": "apiKey",
+        "in": "header",
+        "description": "a valid Identity token must be provided in the header of the request"
+      }
+    }
+  }
+}

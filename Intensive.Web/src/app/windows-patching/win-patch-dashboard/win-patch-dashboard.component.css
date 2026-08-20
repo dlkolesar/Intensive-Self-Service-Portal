@@ -1,0 +1,27 @@
+
+.ss-win-patch-dashboard .mat-table{
+    width:100%;
+}
+
+.ss-win-patch-dashboard .mat-column-name {
+    width: 400px
+ }
+ 
+ .ss-win-patch-dashboard .mat-column-patchingLevel {
+    width: 100px
+  }
+  .ss-win-patch-dashboard  .mat-column-dataCenter {
+    width: 50px
+ }
+ 
+ .ss-win-patch-dashboard .mat-column-lastContact {
+    width:200px
+ }
+ 
+ .ss-win-patch-dashboard .mat-column-lastPatchDate {
+    width: 180px
+  }
+ 
+  .ss-win-patch-dashboard .mat-column-nextPatchDate {
+   width: 150px
+ }

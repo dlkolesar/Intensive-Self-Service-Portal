@@ -1,0 +1,181 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Auditing API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.selfservice.intensive.int/auditing/v1",
+      "description": "Production"
+    },
+    {
+      "url": "https://test.api.selfservice.intensive.int/auditing/v1",
+      "description": "Staging/Test"
+    },
+    {
+      "url": "https://beta.api.selfservice.intensive.int/auditing/v1",
+      "description": "Beta"
+    }
+  ],
+  "paths": {
+    "/auditing/v1": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "count": 6,
+                    "resources": [
+                      "https://staging.api.intensive.int/auditing/test/4",
+                      "https://staging.api.intensive.int/auditing/test/5",
+                      "https://staging.api.intensive.int/auditing/test/22",
+                      "https://staging.api.intensive.int/auditing/test/23",
+                      "https://staging.api.intensive.int/auditing/test/24",
+                      "https://staging.api.intensive.int/auditing/test/25"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "returns a list of audit urls corresponding to audit trail entries that match the given querystring parameters.  The data rows that match ALL conditions will be returned\n",
+        "operationId": "GET_auditing-v1",
+        "parameters": [
+          {
+            "name": "systemId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "account",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "device",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "userid",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/auditing/v1/{id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": 4,
+                    "systemId": 14,
+                    "deviceNumber": 630533,
+                    "account": 1224,
+                    "userId": "joe.racker",
+                    "action": "Updated Patching Client Config",
+                    "detail": "ScheduledDay changed from Monday to Friday\r\nScheduledTime changed from 2 to 6\r\n",
+                    "timeStamp": "2017-10-24T14:39:31.197"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Retrieves the audit entry\n",
+        "operationId": "GET_auditing-v1-id"
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "the unique, generated sequence number of the audit entry\n"
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "auditEntry": {
+        "description": "any change by an API cal via a PUT, POST, or DELETE will have details of that change recorded in an Audit Trail held within the database\n",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "a unique, generated sequence number\n",
+            "type": "integer"
+          },
+          "systemId": {
+            "description": "- a unique number that is assigned to each Segment Support system.  This id corresponds to the id number used by ERIS (https://encore.rackspace.com/RapidResponse/vulnerability/systems)\n\nValid Id numbers are:\n  14 = Windows Patching\n",
+            "type": "integer"
+          },
+          "account": {
+            "description": "CORE account the change was made for\n",
+            "type": "integer"
+          },
+          "userId": {
+            "description": "the SSO of the user that made the change.  The SSO is extracted from the CORE / Encore token provided in the header of the API call\n",
+            "type": "string"
+          },
+          "action": {
+            "description": "a brief description of what was created, changed, or deleted\n",
+            "type": "string"
+          },
+          "detail": {
+            "description": "additional details about what was changed. For example, a list of each attribute and the value each was changed from and to, or teh CORE ticket number that documents the approval of a change.  \nNOTE  carriage-returns may be embedded to make lists more readable\n",
+            "type": "string"
+          },
+          "timeStamp": {
+            "description": "date/time the change was made\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "systemId",
+          "account",
+          "userId",
+          "action",
+          "detail",
+          "timeStamp"
+        ]
+      }
+    },
+    "responses": {},
+    "parameters": {},
+    "examples": {},
+    "requestBodies": {},
+    "headers": {},
+    "securitySchemes": {},
+    "links": {},
+    "callbacks": {}
+  }
+}

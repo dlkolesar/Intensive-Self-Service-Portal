@@ -1,0 +1,4 @@
+12/06/2019 13:03:14 Intensive.API.ARIC [1] ***** API starting up *****
+12/06/2019 13:03:25 Intensive.API.ARIC [1] failed to start up
+12/06/2019 13:32:09 Intensive.API.ARIC [1] ***** API starting up *****
+12/06/2019 13:32:20 Intensive.API.ARIC [1] failed to start up

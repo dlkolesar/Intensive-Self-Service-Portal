@@ -1,0 +1,15 @@
+12/05/2019 16:41:50 Intensive.API.Auditing [1] ***** API starting up *****
+12/05/2019 16:41:55 Intensive.API.Auditing [7] Failed to determine the https port for redirect.
+12/05/2019 16:41:56 Intensive.API.Auditing [7] HTTP "GET" "/weatherforecast" responded 400 in 585.2449 ms
+12/05/2019 16:41:56 Intensive.API.Auditing [4] HTTP "GET" "/favicon.ico" responded 400 in 9.4842 ms
+12/05/2019 17:18:06 Intensive.API.Auditing [1] ***** API starting up *****
+12/05/2019 17:18:12 Intensive.API.Auditing [8] Failed to determine the https port for redirect.
+12/05/2019 17:18:47 Intensive.API.Auditing [1] ***** API starting up *****
+12/05/2019 17:18:52 Intensive.API.Auditing [12] Failed to determine the https port for redirect.
+12/05/2019 17:18:53 Intensive.API.Auditing [12] HTTP "GET" "/weatherforecast" responded 400 in 703.0085 ms
+12/05/2019 17:18:53 Intensive.API.Auditing [7] HTTP "GET" "/favicon.ico" responded 400 in 5.1355 ms
+12/05/2019 17:19:04 Intensive.API.Auditing [7] Searching Audit Trail Entries....
+12/05/2019 17:19:06 Intensive.API.Auditing [7] results: 2
+12/05/2019 17:19:06 Intensive.API.Auditing [7] Found 2 matching entries
+12/05/2019 17:19:06 Intensive.API.Auditing [7] HTTP "GET" "/?account=871995" responded 200 in 6770.5446 ms
+12/05/2019 17:19:06 Intensive.API.Auditing [11] HTTP "GET" "/favicon.ico" responded 400 in 2.7542 ms

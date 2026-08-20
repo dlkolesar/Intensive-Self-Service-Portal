@@ -1,0 +1,46 @@
+ <div class="ss-ad-user-select">
+  <div *ngIf="pctComplete>0 && pctComplete<100" 
+        class="border-primary centered"
+        style="height: 136px" >
+        <p style="font-style: italic;font-size:8pt">Loading Users....</p>
+      <mat-progress-spinner  color="accent"
+                            mode="determinate"
+                            diameter="64" strokeWidth="37"
+                            [value]="pctComplete" 
+                            style="margin-left:auto;margin-right:auto"
+                            >
+      </mat-progress-spinner> 
+      <!-- stroke = (diam + 10 )/2-->
+  </div>
+  <div *ngIf="pctComplete==100" class="ss-ad-user-select scrollable border-primary"
+          [style.height.px]="componentHeight">
+    <mat-list dense>
+      <mat-list-item *ngFor="let u of usersSorted" 
+          [class.mat-list-item-active]="u.domainName == selectedUser.domainName && u.userId==selectedUser.userId"
+          (click)="onUserSelected(u)" >
+          <mat-icon *ngIf="u.enabled && !isExpired(u) && u.lockedOut" matListIcon 
+                    style="color:darkorange" 
+                    title="This user account is currently LOCKED OUT">
+              lock
+          </mat-icon>
+        
+          <mat-icon *ngIf="u.enabled && isExpired(u)" matListIcon  
+                    style="color:darkorange" 
+                    title="The password for this account has EXPIRED">
+              alarm
+          </mat-icon> 
+
+          <mat-icon *ngIf="!u.enabled" matListIcon  
+                style="color:darkred" 
+                title="This user account is currently DISABLED">
+              cancel
+        </mat-icon>
+
+        <!-- empty placeholder icon; just to keep things lined up -->
+        <mat-icon *ngIf="u.enabled && !isExpired(u) && !u.lockedOut " matListIcon disabled>
+        </mat-icon>
+             {{u.principalName}}
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>

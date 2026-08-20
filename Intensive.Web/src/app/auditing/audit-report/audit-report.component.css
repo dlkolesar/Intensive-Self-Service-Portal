@@ -1,0 +1,13 @@
+
+.mat-table {width: 100%; table-layout:fixed; }
+
+.mat-column-systemName {width: 200px}
+.mat-column-account {width: 100px}
+.mat-column-deviceNumber {width: 100px}
+.mat-column-userid {width: 200px}
+.mat-column-action {width: 800px}
+.mat-column-timeStamp {width: 150px}
+
+.mat-column-action-detail {padding-left:16px; font-style: italic;}
+
+

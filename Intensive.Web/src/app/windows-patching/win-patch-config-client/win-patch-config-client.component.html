@@ -1,0 +1,273 @@
+
+
+<div class="ss-win-patch-config-client">
+    <form #formClientConfig="ngForm" >
+        <mat-tab-group dynamicHeight="true">
+            <mat-tab label="General" >
+                <div style="padding-top:16px">
+                    <label><strong>Patching Level</strong></label><br>
+                    <mat-button-toggle-group name="patchingLevel" id="patchingLevel" #grp="matButtonToggleGroup"
+                                        [value]="client.patchingLevel" 
+                                        (change)="onPatchingLevelChange($event)">
+                        <mat-button-toggle matTooltip="Disable Automatic Updates; patches will NOT be downloaded nor installed" 
+                                        [checked]="+client.patchingLevel==0"
+                                        value="0">None</mat-button-toggle>
+                        <mat-button-toggle matTooltip="Use the default Windows Automatic Update Client to download and install patches" 
+                                        [checked]="+client.patchingLevel==1"
+                                        value="1">Basic</mat-button-toggle>
+                        <mat-button-toggle matTooltip="Use a custom ARIC process to download and install patches and perform pre- and post-patching actions" 
+                                        [checked]="+client.patchingLevel==2"
+                                        value="2">Advanced</mat-button-toggle>
+                        <mat-button-toggle matTooltip="Patches will be installed manually"  
+                                        [checked]="+client.patchingLevel==3"
+                                        value="3">Manual</mat-button-toggle>
+                    </mat-button-toggle-group><br>
+                    <br>
+                    <br>
+                    <mat-slide-toggle [disabled]="(client.patchingLevel==0)||(client.patchingLevel==2)" 
+                        [(ngModel)]="client.noAutoRebootWithLoggedOnUsers" name="autoReboot">
+                        DO NOT Auto Reboot if users are logged on
+                    </mat-slide-toggle><br>
+                    <div style="font-size:small" class="color-accent" *ngIf="!client.noAutoRebootWithLoggedOnUsers">
+                        <i>If there are updates with pending reboots, the selected server(s) could reboot at random times</i>
+                    </div>
+                    <br>
+                    <br>
+                        <mat-slide-toggle  [disabled]="(client.patchingLevel==0)||(client.patchingLevel==2)" 
+                                            [(ngModel)]="client.optedOut" name="optOut">
+                            Opt out of config management
+                        </mat-slide-toggle><br>
+                        <div style="font-size:small" class="color-accent" *ngIf="client.optedOut">
+                            <i>Any changes and/or performed actions will NOT be applied to devices that have been opted OUT
+
+                            </i>
+                        </div>
+                    <br>
+                    <br>
+                    <mat-form-field>
+                        <mat-select  [disabled]="(client.patchingLevel==0)||(client.patchingLevel==2)" 
+                                        placeholder="Select an Action" 
+                                        required 
+                                        floatPlaceholder="true" 
+                                        [(ngModel)]="client.auOptions" 
+                                        #opt="ngModel"
+                                        id="auOptions" name="auOptions"
+                                        [ngModelOptions]="{updateOn: 'blur'}"
+                                        style="width:250px">
+                            <mat-option *ngIf="client.patchingLevel == 3" [value]="2">Notify BEFORE downloading</mat-option>
+                            <mat-option *ngIf="client.patchingLevel == 3" [value]="3">Notify AFTER downloading</mat-option>
+                            <mat-option *ngIf="client.patchingLevel == 1" [value]="4">Automatic Download and install</mat-option>
+                            <mat-option *ngIf="client.patchingLevel == 1" [value]="5">User can configure</mat-option>
+                        </mat-select>  
+                     </mat-form-field>
+                    <div class="color-warn" *ngIf="( ((client.patchingLevel == 1) && (client.auOptions!= 4) && (client.auOptions !=5) )  || ( (client.patchingLevel == 3) && (client.auOptions!= 2) && (client.auOptions !=3) ))">
+                            Option '{{client.auOptions}}'' is not valid for the selected Patching Level. Select an action
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Process" *ngIf="client.patchingLevel==2">
+                <div style="padding-top:16px">
+                    <mat-form-field style="width:50%">
+                        <mat-select name="aricProcess"
+                                    [(ngModel)]="client.advancedPatching.processName"
+                                    required
+                                    placeholder="Select an Advanced Patching Process"
+                                    >
+                            <mat-option *ngFor="let p of availableProcesses"
+                                [value]="p.processName" [title]="p.description">{{p.displayName}}</mat-option>
+                            
+                        </mat-select>
+                    </mat-form-field>
+                    <br>
+                    <br>
+                    <br>
+                    <!--  Advanced Patching Process Parameters -->
+                    <div *ngIf="(client.advancedPatching) && (client.advancedPatching.processName == 'WAP:Portal:PatchNow')">
+                        <mat-checkbox name="patchNow_download" 
+                                    [(ngModel)]="client.advancedPatching.arguments.downloadPatches"
+                                    title="[Optional] If checked, all available and approved patches will be downloaded"
+                                    [disabled]="client.advancedPatching.arguments.installPatches"
+                                    >
+                            Download Applicable Patches
+                        </mat-checkbox><br>
+                        <mat-checkbox name="patchNow_install" [(ngModel)]="client.advancedPatching.arguments.installPatches"
+                        title="[Optional] If checked, all available and approved patches will be downloaded AND installed"
+                        (change)="patchNowArguments.downloadpatches=true"
+                                >Install Downloaded Patches</mat-checkbox><br>
+
+                        <br>
+                        <mat-checkbox name="patchNow_reboot" 
+                                [(ngModel)]="client.advancedPatching.arguments.reboot"
+                                (change)="patchNowArguments.forcereboot=false"
+                                >Reboot server if required by the installed patch(es)</mat-checkbox><br>
+
+                        <mat-checkbox name="patchNow_forcereboot"
+                            [(ngModel)]="client.advancedPatching.arguments.forceReboot"
+                            (change)="patchNowArguments.reboot=false"
+                            >Reboot server after installing patches, even if no patch requires a reboot</mat-checkbox><br>
+                        <br>
+                        <mat-form-field style="width:220px">
+                            <input matInput placeholder="Maintenance Window End Date/Time"
+                                                type="datetime-local"
+                                                [(ngModel)]="client.advancedPatching.arguments.endTime"
+                                                name="patchNow_endtime"
+                                                title="[Optional] If the maintenance window end time has passed, the process will complete the current download/install operation, then abort all remaining actions."
+                            >
+                            <span matSuffix>UTC</span>
+                        </mat-form-field>
+                        <br>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Schedule" *ngIf="client.patchingLevel==1 || client.patchingLevel==3">
+            <div fxLayout="row" fxLayout.lt-lg="column" 
+                    fxLayoutAlign="left start"
+                    fxLayoutGap="16px"
+                    style="padding-top:8px"
+                    >
+                    <div fxFlex>
+                        <label><strong>Release Week</strong></label><br>
+                        <mat-select [(ngModel)]="client.scheduledWeek" 
+                                    name="scheduledWeek" 
+                                    (selectionChange)="onScheduledWeekChange($event)"
+                                    style="width:120px"
+                                    >
+                            <mat-option [value]="0">Custom</mat-option>
+                            <mat-option [value]="1">Early</mat-option>
+                            <mat-option [value]="2">Default</mat-option>
+                            <mat-option [value]="3">Delayed</mat-option>
+                        </mat-select>
+                        
+                    </div>
+                    <div fxFlex>
+                        <label ><strong>Install Day</strong></label><br>
+                        <mat-select   [(ngModel)]="client.scheduledDay"
+                                    [disabled]="client.patchingLevel==3"
+                                    #week="ngModel"
+                                    name="scheduledDay" 
+                                    (selectionChange)="onScheduledDayChange($event)"
+                                    style="width:120px"
+                                    >
+                            <mat-option [value]="0">Every Day</mat-option>
+                            <mat-option [value]="2">Monday</mat-option>
+                            <mat-option [value]="3">Tuesday</mat-option>
+                            <mat-option [value]="4">Wednesday</mat-option>
+                            <mat-option [value]="5">Thursday</mat-option>
+                            <mat-option [value]="6">Friday</mat-option>
+                            <mat-option [value]="7">Saturday</mat-option>
+                            <mat-option [value]="1">Sunday</mat-option>
+                        </mat-select>
+                        <div *ngIf="week.invalid && (week.dirty || week.touched)"
+                                class="alert alert-danger">
+                
+                            <div *ngIf="week.errors.required">
+                                Week is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div fxFlex>
+                        <label ><strong>Install Time</strong>(<em>local server time</em>)</label><br>
+                        <mat-select  *ngIf="(client.patchingLevel==1 || client.patchingLevel==3)" 
+                                    [disabled]="client.patchingLevel==3"
+                                    [(ngModel)]="client.scheduledTime" 
+                                    style="width:120px"
+                                    name="scheduledTime" >
+                            <mat-option [value]="0">12:00am</mat-option>
+                            <mat-option [value]="1">01:00am</mat-option>
+                            <mat-option [value]="2">02:00am</mat-option>
+                            <mat-option [value]="3">03:00am</mat-option>
+                            <mat-option [value]="4">04:00am</mat-option>
+                            <mat-option [value]="5">05:00am</mat-option>
+                            <mat-option [value]="6">06:00am</mat-option>
+                            <mat-option [value]="7">07:00am</mat-option>
+                            <mat-option [value]="8">08:00am</mat-option>
+                            <mat-option [value]="9">09:00am</mat-option>
+                            <mat-option [value]="10">10:00am</mat-option>
+                            <mat-option [value]="11">11:00am</mat-option>
+                            <mat-option [value]="12">12:00pm</mat-option>
+                            <mat-option [value]="13">01:00pm</mat-option>
+                            <mat-option [value]="14">02:00pm</mat-option>
+                            <mat-option [value]="15">03:00pm</mat-option>
+                            <mat-option [value]="16">04:00pm</mat-option>
+                            <mat-option [value]="17">05:00pm</mat-option>
+                            <mat-option [value]="18">06:00pm</mat-option>
+                            <mat-option [value]="19">07:00pm</mat-option>
+                            <mat-option [value]="20">08:00pm</mat-option>
+                            <mat-option [value]="21">09:00pm</mat-option>
+                            <mat-option [value]="22">10:00pm</mat-option>
+                            <mat-option [value]="23">11:00pm</mat-option>
+                        </mat-select>
+                        
+                    </div>
+            </div>
+            
+                <div fxLayout="row" fxLayout.lt-lg="column" 
+                        fxLayoutAlign="left start"
+                        style="padding:16px">
+                    <div fxFlex="none">
+                        <ss-win-patch-calendar #patchingCalendar
+                        [client]="client"
+                        (dateSelected)="onDateSelected($event)">
+                        </ss-win-patch-calendar>
+                    </div>
+                    <div fxFlex="none" class="legend">
+                        <div class="patch-tuesday"> Patch Tuesday </div>
+                        <br>
+                        <br>
+                        <!-- <div class="bg-primary selected-patch-date"> Selected Patching Date </div> -->
+                        <div class="border-primary selected-patch-date"> Selected Patching Date </div>
+                        <br>
+                        <div class="early-patch-week">Early Release Week</div>
+                        
+                        <div class="default-patch-week">Default Release Week</div>
+                        
+                        <div class="delayed-patch-week">Delayed Release Week</div>
+                    </div>
+                </div>
+            
+            </mat-tab>
+            <mat-tab label="Advanced Schedule" *ngIf="client.patchingLevel==2">
+                    <p>
+                            Execute the selected process on the 
+                        </p>
+                        <mat-form-field>
+                            <mat-select name="advSchWeek"
+                                        [(ngModel)]="client.advancedPatching.dayOfMonth"
+                                        placeholder="Week"
+                                        required>
+                                <mat-option value="1-7">1st</mat-option>
+                                <mat-option value="8-14">2nd</mat-option>
+                                <mat-option value="15-21">3rd</mat-option>
+                                <mat-option value="22-28">4th</mat-option>
+                                <mat-option value="25-31">Last</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-select name="advSchDay"
+                                        [(ngModel)]="client.advancedPatching.dayOfWeek"
+                                        required
+                                        placeholder="Day">
+                                <mat-option value="0">Sunday</mat-option>
+                                <mat-option value="1">Monday</mat-option>
+                                <mat-option value="2">Tuesday</mat-option>
+                                <mat-option value="3">Wednesday</mat-option>
+                                <mat-option value="4">Thursday</mat-option>
+                                <mat-option value="5">Friday</mat-option>
+                                <mat-option value="6">Saturday</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <span> of the month at </span>
+                        <mat-form-field style="width:125px">
+                            <input matInput type="time" name="advSchTime" required
+                                    [(ngModel)]="advSchedTime"
+                                    (change)="parseTime()"
+                                    placeholder="UTC Time"/>
+                        </mat-form-field>
+                            
+            </mat-tab>
+        </mat-tab-group>
+    </form>
+</div>

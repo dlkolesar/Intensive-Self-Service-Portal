@@ -1,0 +1,133 @@
+<form #formReport="ngForm" >
+    <div fxLayout="row" fxLayoutAlign="left start">
+        <div fxFlex="grow">
+            <mat-card>
+                <mat-card-title>
+                    <h3>Patching Report</h3>
+                </mat-card-title>
+                <mat-card-content>
+                    <mat-card>
+                        <strong>Search Criteria</strong>
+                        <mat-card-content style="margin-left:32px">  
+                            <strong>Include Status </strong>
+                            <mat-button-toggle-group #group="matButtonToggleGroup" multiple="true" (change)="stateChanged($event)">
+                                <mat-button-toggle checked="true" value="notinstalled">NotInstalled</mat-button-toggle>
+                                <mat-button-toggle checked="true" value="downloaded">Downloaded</mat-button-toggle>
+                                <mat-button-toggle checked="true" value="installed">Installed</mat-button-toggle>
+                                <mat-button-toggle checked="true" value="failed">Failed</mat-button-toggle>
+                                <mat-button-toggle checked="true" value="pendingreboot">PendingReboot</mat-button-toggle>
+                            </mat-button-toggle-group>
+
+                            <mat-form-field style="margin-left:20px;margin-right:20px;width:100px">
+                                <input matInput [matDatepicker]="fromPicker" placeholder="From Date" (dateChange)="fromDateChange($event)">
+                                <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #fromPicker></mat-datepicker>
+                            </mat-form-field>
+                            
+                            <mat-form-field style="margin-left:20px;margin-right:20px;width:100px">
+                                <input matInput [matDatepicker]="toPicker" placeholder="To Date" (dateChange)="toDateChange($event)">
+                                <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #toPicker></mat-datepicker>
+                            </mat-form-field>
+
+                            <button mat-raised-button color="primary" (click)="GetPatchingClients()">Find Patches</button>
+                        </mat-card-content>
+                    </mat-card>
+                    <div style="margin-top:32px;width:100%;" [ngClass]="showForm ? 'notHidden' : 'hidden'" >
+                        <mat-card>
+                            <mat-card-content>
+                                <p class="color-warn" *ngIf="pctComplete>=100 && report.length==0">No servers were found matching the given criteria
+                                </p>
+
+                                <div class="full-width" style="display:inline-block">
+                                    <button mat-button color="accent"
+                                        style="float:right" 
+                                        (click)="exportCSV('PatchingReport-' + account.number +'.csv')">
+                                            Export to CSV
+                                    </button>
+                                </div>
+                                <div [style.height.px]="contentHeight - 350" style="overflow:auto">
+                                    <table mat-table #table [dataSource]="dsReport" matSort>  
+                                        <ng-container matColumnDef="name">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header > Server Name </th>
+                                            <td mat-cell *matCellDef="let row">
+                                                <span>{{row.name}}</span>
+                                            </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="patchingLevel">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header > Patching Level </th>
+                                            <td mat-cell *matCellDef="let row">
+                                                <!-- <span>{{row.patchingLevel}}</span> -->
+                                                <div [ngSwitch]="row.patchingLevel">
+                                                    <span *ngSwitchCase="0">None</span>
+                                                    <span *ngSwitchCase="1">Basic</span>
+                                                    <span *ngSwitchCase="2">Advanced</span>
+                                                    <span *ngSwitchCase="3">Manual</span>
+                                                    <span *ngSwitchDefault>&nbsp;</span>
+                                                </div>
+                                            </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="patches">
+                                            <th mat-header-cell *matHeaderCellDef class="centered"> 
+                                                Patch Severity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                Patch Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                Patch Name </th>
+                                            <td mat-cell *matCellDef="let row"> 
+                                                <div *ngIf="row.unSupportedOS">
+                                                        This server is running an older OS version that is no longer supported by Microsoft and does not receive new security updates.
+                                                </div>
+                                                <div fxLayout="row" fxLayoutAlign="left start" fxLayoutGap="10px"  *ngFor="let p of row.patches">
+                                                    <!-- <div fxFlex="none" [ngSwitch]="p.severity">
+                                                        <mat-icon *ngSwitchCase="'Critical'" mat-list-icon style="color:darkred" title="Critical">flag</mat-icon>
+                                                        <mat-icon *ngSwitchCase="'Important'" mat-list-icon style="color:darkorange" title="Important">flag</mat-icon>
+                                                        <mat-icon *ngSwitchCase="'Moderate'" mat-list-icon style="color:goldenrod" title="Moderate">flag</mat-icon>
+                                                        <mat-icon *ngSwitchDefault mat-list-icon style="color:darkblue" title="Low or Unspecified Severity">flag</mat-icon>
+                                                    </div> -->
+                                                    <div fxFlex="100px" >
+                                                            {{p.severity}}
+                                                    </div>
+                                                    <!-- <div fxFlex="none">
+                                                        <mat-icon *ngIf="p.requiresReboot" mat-list-icon style="margin-left:8px;color:goldenrod" title="Installation may require a reboot">warning</mat-icon>
+                                                    </div> -->
+                                                    <!-- <div fxFlex="none" [ngSwitch]="p.state">  
+                                                            <mat-icon *ngSwitchCase="0" mat-list-icon style="color:goldenrod" title="Patch status is unknown">help</mat-icon>
+                                                            <mat-icon *ngSwitchCase="2" mat-list-icon style="color: darkred" title="Patch has been downloaded but not installed">cancel</mat-icon>                                                  
+                                                            <mat-icon *ngSwitchCase="3" mat-list-icon style="color:darkgreen" title="Patch has been downloaded but not installed">file_download</mat-icon>
+                                                            <mat-icon *ngSwitchCase="4" mat-list-icon style="color:darkgreen" title="Patch has been downloaded but not installed">file_download</mat-icon>
+                                                            <mat-icon *ngSwitchCase="5" mat-list-icon style="color:darkgreen" title="Patch has been installed">done</mat-icon>
+                                                            <mat-icon *ngSwitchCase="6" mat-list-icon style="color:goldenrod" title="Patch installed, but pending reboot">warning</mat-icon>
+                                                            <mat-icon *ngSwitchDefault mat-list-icon disabled></mat-icon>
+                                                        </div> -->
+                                                        <div fxFlex="100px" > 
+                                                            {{p.state}}
+                                                        </div>
+                                                    <div fxFlex >
+                                                        <span> {{p.title}} </span>
+                                                    </div>   
+                                                </div>  
+                                            </td>
+                                        </ng-container>
+                                        
+                                        <!-- <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef>  </th>
+                                        <td mat-cell *matCellDef="let row"> 
+                                            <button mat-button color="accent" *ngIf="!row.unSupportedOS">Apply Patch(es) Now</button>
+                                        </td>
+                                    </ng-container> -->
+        
+                                    <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+                                    <tr mat-row class="report-row" *matRowDef="let row; columns: columns;"></tr>
+                                    </table>        
+                                    
+                                </div>
+                            </mat-card-content>
+                            
+                        </mat-card>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</form>

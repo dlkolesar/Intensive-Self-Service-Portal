@@ -1,0 +1,2 @@
+12/16/2019 16:16:49 [1] ***** API starting up *****
+12/16/2019 16:17:03 [4] HTTP "GET" "/weatherforecast" responded 404 in 185.0109 ms

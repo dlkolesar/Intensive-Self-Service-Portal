@@ -1,0 +1,157 @@
+
+@import '~@angular/material/theming';
+
+
+@mixin vertical-centre ($height) {
+    height:$height;
+    line-height:$height !important;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+@mixin border-box {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+
+@mixin ss-win-patch-calendar-theme($theme) {
+  // Extract whichever individual palettes you need from the theme.
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  // Use mat-color to extract individual colors from a palette as necessary.
+
+  // .mini-calendar{
+  //   @include $mat-elevation(2);
+  // }
+
+
+.ss-win-patch-calendar {
+    float:left;
+    display:block;
+    @include border-box;
+    background:white;
+    // width:275px;
+    width:296px;
+    height: 354px;
+
+    border:solid 1px #CCC;
+    margin-bottom:10px;
+    
+    $spacing:10px;
+    $icon-width:20px;
+    $header-height:40px;
+
+    .header {
+    //     float:left;
+         width:100%;
+        // background:$secondary-colour;
+        // height:$header-height;
+        // color:white;
+        
+        >* { 
+            @include vertical-centre($header-height);
+        }
+        
+        mat-icon {
+            width: $icon-width;
+            font-size:1.125em;
+            font-weight:bold;
+            @include border-box;
+            cursor:pointer;
+        }
+
+        .title { 
+            width:100%;
+            font-weight:bold;
+            font-size: 14pt;
+            @include border-box;
+            text-align:center;
+        }
+
+        mat-icon.icon-left {
+            text-align:left;
+            @include vertical-centre($header-height);
+        }
+        
+        mat-icon.icon-right {
+            text-align:right;
+            @include vertical-centre($header-height);
+        }
+        
+        
+    }
+
+    .week {
+        //float:left;
+        width:273px;
+        margin-left:14px;
+
+        &:first-child {
+            border-top:none;
+        }
+        
+        >span.day {
+            float:left;
+            //width:14.2857%; //1/7th of th total width
+            width:38px;
+            //padding-top: 7.14258%;
+            //padding-bottom: 7.14258%;
+            @include border-box;
+            //font-size:1.0em;
+            //font-size:13px;
+            text-align:center;
+            @include vertical-centre(38px);
+            background:white;
+            cursor:pointer;
+            color:black;
+            
+            &:first-child {
+                border-left:none;
+            }
+            
+            &.today {
+                color: mat-color($primary);
+                font-weight: bold;
+            }
+            
+            &.different-month {
+                color: gray;
+            }
+            
+            &.selected {
+                font-weight: bold;
+                //background-color: mat-color($primary) !important; //primary color
+                //color: white !important; //text color
+                border:solid 1px mat-color($primary);;//primary color
+                // border-radius: 19px;
+                // -webkit-border-radius: 19px;
+                // -moz-border-radius: 19px;
+
+            }
+
+            &:hover {
+               // border:solid 1px mat-color($primary);//primary color
+               border:solid 1px mat-color($primary);//primary color
+               //border-radius: 999px;
+                
+            }
+        }
+        
+        &.names>span {
+            color:gray;
+            font-weight:bold;
+            cursor:default;
+            &:hover {
+                border: 0;
+                
+            }
+        }
+    }
+}
+
+}

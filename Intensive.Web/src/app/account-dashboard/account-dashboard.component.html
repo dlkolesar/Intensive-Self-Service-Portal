@@ -1,0 +1,19 @@
+<div class="ss-account-dashboard">
+    <mat-grid-list cols="4" gutterSize="8px">
+        <mat-grid-tile colspan="2" class="windows-patching border-primary border-rounded">
+          <mat-grid-tile-header>Patching(Windows)</mat-grid-tile-header>
+          <div class="pieChart"><canvas id="pie1"></canvas></div>
+          <div class="pieChart"><canvas id="pie2"></canvas></div>
+          
+        </mat-grid-tile>
+        <mat-grid-tile rowspan="2" class="border-primary .border-rounded">
+            <mat-grid-tile-header>Patching(Linux)</mat-grid-tile-header>
+            <div class="pieChart">
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile >Monitoring(SCOM)</mat-grid-tile>
+        <mat-grid-tile>Monitoring(nimBUS/UIM)</mat-grid-tile>
+        <mat-grid-tile>Active Directory</mat-grid-tile>
+        <mat-grid-tile>AntiVirus</mat-grid-tile>
+      </mat-grid-list>
+</div>

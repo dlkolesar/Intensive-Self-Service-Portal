@@ -1,0 +1,69 @@
+<!-- <div fxLayout="row" fxLayoutAlign="left start" 
+    fxLayoutGap="10px" class="ss-server-selection" 
+    [style.height.px]="componentHeight">
+    <div fxFlex="none">
+        <ss-server-filters  [dcFilter]="dcFilter" 
+                            (onNameFilterChanged)="onNameFilterChanged($event)"
+                            (onDCFilterChanged)="onDCFilterChanged($event)">
+        </ss-server-filters>
+    </div>
+    <div fxFlex="none">
+        <mat-checkbox [value]="toggleAllServers" 
+                      (change)="toggleAll($event)"
+                      style="margin-left:28px">
+            <strong>Servers</strong>
+        </mat-checkbox>
+        <ss-server-list [servers]="filteredServers" 
+                        (serverClick)="onClick($event)"
+                        (checkboxChange)="onCheckboxChange($event)">
+        </ss-server-list>
+    </div>
+</div> -->
+
+<div class="ss-server-selection" [style.height.px]="componentHeight">
+<mat-drawer-container>
+    <mat-drawer #filterDrawer mode="side">
+            <ss-server-filters  
+                [dcFilterList]="dcFilter" 
+                [tagFilterList]="tags"
+                (onNameFilterChanged)="onNameFilterChanged($event)"
+                (onDCFilterChanged)="onDCFilterChanged($event)">
+            </ss-server-filters>
+            <!--  (onTagFilterChanged)="onTagFilterChanged($event)"
+                (onManageTagsClick)="onManageTagsClick()"> -->
+    </mat-drawer>
+    <mat-drawer-content>
+            <button mat-icon-button type="button"
+                    (click)="filterDrawer.toggle()"
+                    title="Show/Hide Filters"
+                    >
+                <mat-icon>filter_list</mat-icon>
+            </button>
+            <mat-checkbox [value]="toggleAllServers" 
+                (change)="toggleAll($event)"
+            >
+            <strong>Servers</strong> 
+            <span *ngIf="filteredServers.length != servers.length">(<em>filtered</em>)</span>
+        </mat-checkbox>
+        <!-- <mat-form-field class="float-right">
+            <mat-label>Sort By</mat-label>
+            <mat-select [(value)]="sortBy" (selectionChange)="ChangeSort($event)">
+                <mat-option value="name">Device Name</mat-option>
+                <mat-option value="number">Device Number</mat-option>
+            </mat-select>
+        </mat-form-field> -->
+
+        <button mat-icon-button type="button" class="float-right"
+                (click)="ChangeSort()"
+                title="Sort by server {{newSort}}">
+             <mat-icon>sort</mat-icon>
+        </button>
+        <ss-server-list [servers]="filteredServers" 
+                        (serverClick)="onClick($event)"
+                        (checkboxChange)="onCheckboxChange($event)">
+        </ss-server-list>
+    </mat-drawer-content>
+</mat-drawer-container>
+
+    
+</div>

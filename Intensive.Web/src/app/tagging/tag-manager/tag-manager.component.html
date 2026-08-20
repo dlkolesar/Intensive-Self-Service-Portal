@@ -1,0 +1,115 @@
+
+
+
+
+<form #configForm="ngForm" novalidate class="full-width" *ngIf="showForm">
+    <div fxLayout="row" 
+        fxLayoutAlign="left start" fxLayoutGap="10px"  
+        [style.height.px]="componentHeight" class="full-width">
+        <div fxFlex="none">
+            <ss-server-selection *ngIf="showForm"
+                        [servers]="servers"
+                        (serverClick)="serverClick($event)"
+                        (checkboxChange)="checkboxChange($event)">
+            </ss-server-selection>
+        </div>
+        <div fxFlex  style="padding-top:40px">
+            <mat-card >
+                <mat-card-title>Server Tags</mat-card-title>
+                <label *ngIf="selectedServer==null"><=== Select a server from the list</label>
+                <mat-card-content *ngIf="selectedServer!=null" > 
+                    <div fxLayout.gt-md="row" fxLayout.lt-lg="column"
+                        fxLayoutAlign="left start" 
+                        fxLayoutGap="24px" class="full-width">
+                        <div fxFlex="grow">
+                            <mat-card>
+                                <strong>Tags Currently Assigned to All Selected Servers</strong>
+                                <mat-chip-list *ngIf="selectedServer!=null" >
+                                        <mat-chip *ngFor="let t of currentTags"
+                                                    removeable="true" 
+                                                    [value]="t.id"
+                                                    (removed)="removeTagFromSelectedServers(t)"
+                                                    >
+
+                                            {{t.tagName}}
+                                            <mat-icon matChipRemove style="color:darkred">clear</mat-icon>
+                                        </mat-chip>
+                                </mat-chip-list>
+                                
+                                <mat-tab-group style="margin-top:32px">
+                                    <mat-tab label="Public Tags">
+                                        <br>
+                                        <div fxLayout.gt-md="row" fxLayout.lt-lg="column"
+                                                        fxLayoutAlign="left start" 
+                                                        fxLayoutGap="24px" class="full-width">
+                                            <div fxFlex="30">
+                                                    <strong>Tags available to be assigned</strong>
+                                                    <div class="tag-list scrollable border-primary"
+                                                        [style.height.px]="tagListHeight">
+                                                        <mat-chip-list ariaOrientation="vertical">
+                                                            <mat-chip style="width:200px" *ngFor="let t of availablePublicTags"
+                                                                        (click)="assignTagToSelectedServers(t)"
+                                                                        [value]="t.id">
+                                                                {{t.tagName}}
+                                                            </mat-chip>
+                                                    </mat-chip-list>
+                                                    </div>
+                                            </div>
+                                            <div fxFlex="grow">
+                                                    <em>
+                                                        <p>Click on the red X on any tag above to remove it from all checkmarked servers</p>
+                                                        <p></p>
+                                                        <p>Click on tag in the list on the left to assign it to every checkmarked server</p>
+                                                        <p></p>
+                                                    </em>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Private Account Tags">
+                                            <br>
+                                            <div fxLayout.gt-md="row" fxLayout.lt-lg="column"
+                                                            fxLayoutAlign="left start" 
+                                                            fxLayoutGap="24px" class="full-width">
+                                                <div fxFlex="30">
+                                                        <strong>Tags available to be assigned</strong>
+                                                        <div class="tag-list scrollable border-primary"
+                                                            [style.height.px]="tagListHeight">
+                                                            <mat-chip-list ariaOrientation="vertical">
+                                                                <mat-chip style="width:200px" *ngFor="let t of availablePrivateTags"
+                                                                            (click)="assignTagToSelectedServers(t)"
+                                                                            [value]="t.id">
+                                                                    {{t.tagName}}
+                                                                </mat-chip>
+                                                        </mat-chip-list>
+                                                        </div>
+                                                        <button mat-button color="accent" (click)="openTagEditor()">
+                                                                Edit Private Tag List ...
+                                                        </button><br>
+                                                </div>
+                                                <div fxFlex="grow">
+                                                        <em>
+                                                            <p>Click on the red X on any tag above to remove it from all checkmarked servers</p>
+                                                            <p></p>
+                                                            <p>Click on tag in the list on the left to assign it to every checkmarked server</p>
+                                                            <p></p>
+                                                            <p>click on the <strong>[Edit Private Tag List ...]</strong> button to create new tags or delete existing ones</p>
+                                                        </em>
+                                                </div>
+                                            </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </mat-card>
+                        </div>
+                        <div fxFlex="none">
+                            <div>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        
+        </div>
+    </div>
+</form>

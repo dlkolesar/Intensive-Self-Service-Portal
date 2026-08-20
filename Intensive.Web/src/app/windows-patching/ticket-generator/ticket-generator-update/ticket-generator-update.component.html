@@ -1,0 +1,45 @@
+
+
+<div fxLayout="row" fxLayoutAlign="space-around center">
+    <div fxFlex></div>
+    <div fxFlex >
+        <mat-card>
+          <form #updForm="ngForm" 
+                novalidate 
+                (ngSubmit)="OnSubmit()">
+            <mat-card-title>Patching Ticket Generator Ticket Update</mat-card-title>
+            <div fxLayout="row" fxLayoutAlign="left start" >
+                <div fxFlex="grow">
+                  <mat-card>
+                    <mat-card-content>
+                        <mat-slide-toggle [(ngModel)]="privateComment" name="privateComment">
+                            Mark comment as <strong>Private</strong>
+                        </mat-slide-toggle>
+
+                        <mat-form-field style="width:100%">
+                            <textarea matInput name="tktText" type="text" 
+                                        [(ngModel)]="ticketText"
+                                        placeholder="Ticket text"
+                                        [rows]="contentHeight / 32"></textarea>
+                        </mat-form-field>
+                      </mat-card-content>
+                    </mat-card>
+        
+                </div>
+                <div fxFlex="none" style="padding-left:24px">
+                    <button type="submit"
+                            mat-raised-button 
+                            
+                            color="primary" 
+                            class="full-width">
+                            Update Tickets
+                    </button>
+                </div>
+            </div>
+          </form>
+        </mat-card>
+    </div>
+    <div fxFlex></div>
+  </div>
+    
+  

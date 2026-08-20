@@ -1,0 +1,16 @@
+
+.mat-column-name {
+    flex: 0 0 400px;
+    cursor: default;
+ }
+
+ .mat-column-patch{
+     text-overflow: ellipsis;
+     cursor: default;
+ }
+
+ .mat-column-action {
+    flex: 0 0 150px;
+    text-align: right;
+    cursor: default;
+ }
